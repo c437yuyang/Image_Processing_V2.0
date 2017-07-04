@@ -267,10 +267,6 @@ void MyImage_::CopyTo(MyImage_ &img1) const
 	{
 		for (int k=0;k<w;k++)
 		{
-			//img.m_pBits[0][j][k]=psrc[j*nrow+k*3];//B
-			//img.m_pBits[1][j][k]=psrc[j*nrow+k*3+1];//G
-			//img.m_pBits[2][j][k]=psrc[j*nrow+k*3+2];//R
-
 			img1.m_pBits[0][j][k]=m_pBits[0][j][k];//B
 			img1.m_pBits[1][j][k]=m_pBits[1][j][k];//G
 			img1.m_pBits[2][j][k]=m_pBits[2][j][k];//R
