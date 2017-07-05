@@ -370,7 +370,16 @@ void CImage_ProcessingView::OnReverse()
 void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
-	m_Image.CopyTo(m_ImageAfter);
-	MyImage_ img1(m_ImageAfter);
-	img1.CopyTo(m_ImageAfter);
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	if (m_ImageAfter.IsNull())
+		m_Image.CopyTo(m_ImageAfter);
+
+	MyImage_ img1;
+	m_ImageAfter.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
+	img1.RemoveFillTo(m_ImageAfter,20);
+	//img1.CopyTo(m_ImageAfter);
+	//m_
+	m_bIsProcessed = TRUE;
+	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
