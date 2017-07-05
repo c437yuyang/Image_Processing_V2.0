@@ -36,6 +36,7 @@ ON_COMMAND(ID_REVERSE, &CImage_ProcessingView::OnReverse)
 ON_WM_CREATE()
 ON_COMMAND(ID_TOGRAY, &CImage_ProcessingView::OnTogray)
 ON_COMMAND(ID_RETRIEVE, &CImage_ProcessingView::OnRetrieve)
+ON_COMMAND(ID_Test, &CImage_ProcessingView::OnTest)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -178,8 +179,13 @@ void CImage_ProcessingView::OnFileOpen()
 		if(!m_ImageAfter.IsNull()) m_ImageAfter.Destroy();//清除after变量的数据
 		m_bIsProcessed = FALSE;
 		m_bIsGrayed = FALSE;
-		m_strFileNameSave = dlg.GetFileName();
-		m_Image.Load(m_strFileNameSave);//获得图片的地址，并且加载图片
+		m_strFileNameSave = dlg.GetPathName();
+		if (m_Image.Load(m_strFileNameSave) == MyImage_::LOAD_FAIL)
+		{
+			AfxMessageBox(_T("打开图片出错!"));
+			return;
+		}
+		//获得图片的地址，并且加载图片
 		//这里只是加载到数组里，后面的Invalidate(1)再来调用Ondraw函数再来调用MyImage_的Draw方法来画出图片
 		//获得图片的大小，并按其大小设置滚动条的初始窗口大小等参数
 		CSize sizeTotal;
@@ -252,8 +258,6 @@ void CImage_ProcessingView::OnShowred()
 	if(m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
 	// TODO: 在此处为本机数据添加绘制代码
-
-
 	int w=m_Image.GetWidth();//获得图像的宽度
 	int h=m_Image.GetHeight();//获得图像的高度
 	if(m_ImageAfter.IsNull())
@@ -263,9 +267,8 @@ void CImage_ProcessingView::OnShowred()
 	{
 		for (int k=0;k<w;k++)
 		{
-			m_ImageAfter.m_pBits[0][j][k]=0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			m_ImageAfter.m_pBits[1][j][k]=0;//G
-
+			m_ImageAfter[0][j][k]= m_ImageAfter[2][j][k];//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_ImageAfter[1][j][k]= m_ImageAfter[2][j][k];//G
 		}
 	}
 	m_bIsProcessed = TRUE;
@@ -283,7 +286,7 @@ int CImage_ProcessingView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// TODO:  Add your specialized creation code here
 	//打开后自动读入一张图
-	CString str("lena.jpg");
+	CString str("0.jpg");
 	m_Image.Load(str);
 	Invalidate(TRUE);
 	return 0;
@@ -362,4 +365,12 @@ void CImage_ProcessingView::OnReverse()
 	}
 	m_bIsProcessed = TRUE;
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+}
+
+void CImage_ProcessingView::OnTest()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_Image.CopyTo(m_ImageAfter);
+	MyImage_ img1(m_ImageAfter);
+	img1.CopyTo(m_ImageAfter);
 }

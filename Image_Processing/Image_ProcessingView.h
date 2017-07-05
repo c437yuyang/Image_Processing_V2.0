@@ -52,11 +52,8 @@ public:
 	BOOL m_bIsGrayed;
 	UINT m_nResDownRate;
 	UINT m_nGrayRate;
-	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
-//	afx_msg void OnViewToolbar();
-	afx_msg void OnDoubleimage();
 private:
 	// save the original file's name
 	CString m_strFileNameSave;
@@ -64,10 +61,8 @@ public:
 	afx_msg void OnReverse();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnTogray();
-	afx_msg void OnResdwon();
 	afx_msg void OnRetrieve();
 	afx_msg void OnTest();
-	afx_msg void OnGraytohalf();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
