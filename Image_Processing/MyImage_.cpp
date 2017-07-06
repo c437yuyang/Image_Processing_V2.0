@@ -80,9 +80,9 @@ int MyImage_::Load(LPCTSTR pszFileName)
 		{
 			for (int k = 0; k < w; k++)
 			{
-				m_pBits[0][j][k] = psrc[j*nrow + k * 3];//B
-				m_pBits[1][j][k] = psrc[j*nrow + k * 3 + 1];//G
-				m_pBits[2][j][k] = psrc[j*nrow + k * 3 + 2];//R
+				at(j, k, 0) = psrc[j*nrow + k * 3];//B
+				at(j, k, 1) = psrc[j*nrow + k * 3 + 1];//G
+				at(j, k, 2) = psrc[j*nrow + k * 3 + 2];//R
 			}
 		}
 	}
@@ -93,9 +93,9 @@ int MyImage_::Load(LPCTSTR pszFileName)
 		{
 			for (int k = 0; k < w; k++)
 			{
-				m_pBits[0][j][k] = psrc[j*nrow + k];//B
-				m_pBits[1][j][k] = psrc[j*nrow + k];//G
-				m_pBits[2][j][k] = psrc[j*nrow + k];//R
+				at(j, k, 0) = psrc[j*nrow + k];//B
+				at(j, k, 1) = psrc[j*nrow + k];//G
+				at(j, k, 2) = psrc[j*nrow + k];//R
 			}
 		}
 	}
@@ -106,9 +106,9 @@ int MyImage_::Load(LPCTSTR pszFileName)
 		{
 			for (int k = 0; k < w; k++)
 			{
-				m_pBits[0][j][k] = psrc[j*nrow + k * 4];//B
-				m_pBits[1][j][k] = psrc[j*nrow + k * 4 + 1];//G
-				m_pBits[2][j][k] = psrc[j*nrow + k * 4 + 2];//R
+				at(j, k, 0) = psrc[j*nrow + k * 4];//B
+				at(j, k, 1) = psrc[j*nrow + k * 4 + 1];//G
+				at(j, k, 2) = psrc[j*nrow + k * 4 + 2];//R
 			}
 		}
 	}
@@ -129,18 +129,23 @@ void MyImage_::Create( //Ìî³äÊı×é£¬²»¹ÜCImage£¬CimageÖ»¸ºÔğ×îºóÏÔÊ¾µÄÊ±ºòºÍ¼ÓÔØÍ
 	int h = GetHeight();
 
 	// Í¨µÀ ĞĞ ÁĞ,ch,y,x
-	m_pBits = (BYTE***)new   BYTE**[3];
-	for (int i = 0; i < 3; i++)
-	{
-		m_pBits[i] = (BYTE**)new  BYTE*[h];
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < h; j++)
-		{
-			m_pBits[i][j] = new BYTE[w];
-		}
-	}
+	//m_pBits = (BYTE***)new   BYTE**[3];
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	m_pBits[i] = (BYTE**)new  BYTE*[h];
+	//}
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < h; j++)
+	//	{
+	//		m_pBits[i][j] = new BYTE[w];
+	//	}
+	//}
+
+	//ĞŞ¸ÄÎªÊ¹ÓÃ1Î¬Êı×é£¬Ìá¹©.at½Ó¿Ú£¬ÊµÏÖÀàËÆÓÚOpenCVµÄĞ§¹û
+	m_pBits = new BYTE[w*h * 3]();
+
+
 	int nCb = (color & 0x00ff0000) >> 16;
 	int nCg = (color & 0x0000ff00) >> 8;
 	int nCr = color & 0x000000ff;
@@ -149,9 +154,12 @@ void MyImage_::Create( //Ìî³äÊı×é£¬²»¹ÜCImage£¬CimageÖ»¸ºÔğ×îºóÏÔÊ¾µÄÊ±ºòºÍ¼ÓÔØÍ
 	{
 		for (int k = 0; k < w; k++)
 		{
-			m_pBits[0][j][k] = nCb;//B
-			m_pBits[1][j][k] = nCg;//G
-			m_pBits[2][j][k] = nCr;//R
+			at(j, k, 0) = nCb;
+			at(j, k, 1) = nCg;
+			at(j, k, 2) = nCr;
+			//m_pBits[0][j][k] = nCb;//B
+			//m_pBits.at(j,k,1) = nCg;//G
+			//m_pBits.at(j,k,2) = nCr;//R
 		}
 	}
 }
@@ -179,9 +187,12 @@ int  MyImage_::Draw(
 	{
 		for (int k = 0; k < w; k++)
 		{
-			psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
-			psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
-			psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
+			//psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+			//psrc[j*nrow + k * 3 + 1] = m_pBits.at(j,k,1);//G
+			//psrc[j*nrow + k * 3 + 2] = m_pBits.at(j,k,2);//R
+			psrc[j*nrow + k * 3] = at(j, k, 0);
+			psrc[j*nrow + k * 3 + 1] = at(j, k, 1);
+			psrc[j*nrow + k * 3 + 2] = at(j, k, 2);
 		}
 	}
 
@@ -209,22 +220,22 @@ void MyImage_::Destroy()
 {
 	if (m_pBits != NULL)
 	{
-		int h = GetHeight();
-		//for   (int   i=0;   i<2;   i++)   //comment by yxp 2016_12_11
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < h; j++)
-			{
+		//int h = GetHeight();
+		////for   (int   i=0;   i<2;   i++)   //comment by yxp 2016_12_11
+		//for (int i = 0; i < 3; i++)
+		//{
+		//	for (int j = 0; j < h; j++)
+		//	{
 
-				delete[] m_pBits[i][j];
-				m_pBits[i][j] = NULL;
-			}
-		}
-		for (int i = 0; i < 3; i++)
-		{
-			delete[] m_pBits[i];
-			m_pBits[i] = NULL;
-		}
+		//		delete[] m_pBits[i][j];
+		//		m_pBits[i][j] = NULL;
+		//	}
+		//}
+		//for (int i = 0; i < 3; i++)
+		//{
+		//	delete[] m_pBits[i];
+		//	m_pBits[i] = NULL;
+		//}
 		delete[]  m_pBits;
 		m_pBits = NULL;
 	}
@@ -246,9 +257,13 @@ int MyImage_::Save(
 	{
 		for (int k = 0; k < w; k++)
 		{
-			psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
-			psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
-			psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
+			//psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+			//psrc[j*nrow + k * 3 + 1] = m_pBits.at(j,k,1);//G
+			//psrc[j*nrow + k * 3 + 2] = m_pBits.at(j,k,2);//R
+
+			psrc[j*nrow + k * 3] = at(j, k, 0);//B
+			psrc[j*nrow + k * 3 + 1] = at(j, k, 1);//G
+			psrc[j*nrow + k * 3 + 2] = at(j, k, 2);//R
 		}
 	}
 	if (s_CImage.Save(pszFileName, guidFileType))
@@ -273,7 +288,7 @@ void MyImage_::CopyTo(MyImage_ &img1) const
 	/*´´½¨ÈıÎ¬Êı×é²¢½«m_CImage¸´ÖÆ½øÈıÎ¬Êı×é*/
 
 	// Í¨µÀ ĞĞ ÁĞ
-	img1.m_pBits = (BYTE***)new   BYTE**[3];
+	/*img1.m_pBits = (BYTE***)new   BYTE**[3];
 	for (int i = 0; i < 3; i++)
 	{
 		img1.m_pBits[i] = (BYTE**)new  BYTE*[h];
@@ -284,15 +299,21 @@ void MyImage_::CopyTo(MyImage_ &img1) const
 		{
 			img1.m_pBits[i][j] = new BYTE[w];
 		}
-	}
+	}*/
+	img1.m_pBits = new BYTE[w*h * 3]();
 	//¸´ÖÆÍ¼ÏñÊı¾İÊı×é
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
-			img1.m_pBits[0][j][k] = m_pBits[0][j][k];//B
-			img1.m_pBits[1][j][k] = m_pBits[1][j][k];//G
-			img1.m_pBits[2][j][k] = m_pBits[2][j][k];//R
+			//img1.m_pBits[0][j][k] = m_pBits[0][j][k];//B
+			//img1.m_pBits.at(j,k,1) = m_pBits.at(j,k,1);//G
+			//img1.m_pBits.at(j,k,2) = m_pBits.at(j,k,2);//R
+
+			img1.at(j, k, 0) = at(j, k, 0);//B
+			img1.at(j, k, 1) = at(j, k, 1);//G
+			img1.at(j, k, 2) = at(j, k, 2);//R
+
 		}
 	}
 
@@ -335,7 +356,7 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 	}
 
 	//´´½¨Êı×é Í¨µÀ ĞĞ ÁĞ
-	dst.m_pBits = (BYTE***)new   BYTE**[3];
+	/*dst.m_pBits = (BYTE***)new   BYTE**[3];
 	for (int i = 0; i < 3; i++)
 	{
 		dst.m_pBits[i] = (BYTE**)new  BYTE*[h];
@@ -346,17 +367,22 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 		{
 			dst.m_pBits[i][j] = new BYTE[w];
 		}
-	}
-
+	}*/
+	dst.m_pBits = new BYTE[w*h * 3]();
 
 	//Ô­Í¼Êı¾İ½øĞĞ¸´ÖÆ
 	for (int j = N; j < h - N; j++) //ĞĞ
 	{
 		for (int k = N; k < w - N; k++) //ÁĞ
 		{
-			dst[0][j][k] = m_pBits[0][j - N][k - N];//B
-			dst[1][j][k] = m_pBits[1][j - N][k - N];//G
-			dst[2][j][k] = m_pBits[2][j - N][k - N];//R
+			//dst[0][j][k] = m_pBits[0][j - N][k - N];//B
+			//dst.at(j, k, 1) = m_pBits[1][j - N][k - N];//G
+			//dst.at(j, k, 2) = m_pBits[2][j - N][k - N];//R
+
+			dst.at(j, k, 0) = at(j - N, k - N, 0);//B
+			dst.at(j, k, 1) = at(j - N, k - N, 1);//G
+			dst.at(j, k, 2) = at(j - N, k - N, 2);//R
+
 		}
 	}
 
@@ -371,28 +397,36 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 			{
 				if (nFillColor == 0 || nFillColor == 255)
 				{
-					dst.m_pBits[j][N - k][i] = nFillColor;//ÉÏ±ßÔµ
-					dst.m_pBits[j][h - k][i] = nFillColor;//ÏÂ±ßÔµ
+					dst.at(j, N - k, i) = nFillColor;//ÉÏ±ßÔµ
+					dst.at(j, h - k, i) = nFillColor;//ÏÂ±ßÔµ
+					//dst.m_pBits[j][N - k][i] = nFillColor;//ÉÏ±ßÔµ
+					//dst.m_pBits[j][h - k][i] = nFillColor;//ÏÂ±ßÔµ
 				}
 				else //nFillMode ÔÚ¸´ÖÆ±ßÔµÏñËØµÄÊ±ºòÉèÎª-1
 				{
 					if (i >= N && i <= w - 1 - N)
 					{
-						dst.m_pBits[j][N - k][i] = m_pBits[j][0][i - N];//ÉÏ±ßÔµ
-						dst.m_pBits[j][h - k][i] = m_pBits[j][h - 2 * N - 1][i - N];//ÏÂ±ßÔµ
+						dst.at(j, N - k, i) = at(0, i - N, j);//ÉÏ±ßÔµ
+						dst.at(j, h - k, i) = at(h - 2 * N - 1, i - N, j);//ÏÂ±ßÔµ
+
+						//dst.at(j, N - k, i) = m_pBits[j][0][i - N];//ÉÏ±ßÔµ
+						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][i - N];//ÏÂ±ßÔµ
 					}
 					else if (i < N)
 					{
-						dst.m_pBits[j][N - k][i] = m_pBits[j][0][0];//ÉÏ±ßÔµ
-						dst.m_pBits[j][h - k][i] = m_pBits[j][h - 2 * N - 1][0];//ÏÂ±ßÔµ
+						dst.at(j, N - k, i) = at(0, 0, j);//ÉÏ±ßÔµ
+						dst.at(j, h - k, i) = at(h - 2 * N - 1, 0, j);//ÏÂ±ßÔµ
+
+						//dst.at(j, N - k, i) = m_pBits[j][0][0];//ÉÏ±ßÔµ
+						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][0];//ÏÂ±ßÔµ
 					}
 					else if (i > w - 1 - N)
 					{
-						dst.m_pBits[j][N - k][i] = m_pBits[j][0][w - 2 * N - 1];//ÉÏ±ßÔµ
-						dst.m_pBits[j][h - k][i] = m_pBits[j][h - 2 * N - 1][w - 2 * N - 1];//ÏÂ±ßÔµ
-					}
-					else {
-						std::cout << "else" << std::endl;
+						dst.at(j, N - k, i) = at(0, w - 2 * N - 1, j);//ÉÏ±ßÔµ
+						dst.at(j, h - k, i) = at(h - 2 * N - 1, w - 2 * N - 1, j);//ÏÂ±ßÔµ
+
+						//dst.at(j, N - k, i) = m_pBits[j][0][w - 2 * N - 1];//ÉÏ±ßÔµ
+						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][w - 2 * N - 1];//ÏÂ±ßÔµ
 					}
 				}
 
@@ -409,13 +443,19 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 			{
 				if (nFillColor == 0 || nFillColor == 255)
 				{
-					dst.m_pBits[j][i][k] = nFillColor;//×ó±ßÔµ
-					dst.m_pBits[j][i][w - k - 1] = nFillColor;//ÓÒ±ßÔµ
+					dst.at(i, k, j) = nFillColor;//×ó±ßÔµ
+					dst.at(i, w - k - 1, j) = nFillColor;//ÓÒ±ßÔµ
+
+					//dst.m_pBits[j][i][k] = nFillColor;//×ó±ßÔµ
+					//dst.m_pBits[j][i][w - k - 1] = nFillColor;//ÓÒ±ßÔµ
 				}
 				else //nFillMode ÔÚ¸´ÖÆ±ßÔµÏñËØµÄÊ±ºòÉèÎª-1
 				{
-					dst.m_pBits[j][i][k] = m_pBits[j][i - N][0]; //×ó±ßÔµÌî³äÉèÎª¸´ÖÆµÚÒ»ÁĞÏñËØ
-					dst.m_pBits[j][i][w - k - 1] = m_pBits[j][i - N][w - 2 * N - 1];  //µ×±ßÔµÌî³äÉèÎª¸´ÖÆ×îºóÒ»ÁĞÏñËØ
+					dst.at(i, k, j) = at(i - N, 0, j);//×ó±ßÔµÌî³äÉèÎª¸´ÖÆµÚÒ»ÁĞÏñËØ
+					dst.at(i, w - k - 1, j) = at(i - N, w - 2 * N - 1, j);//µ×±ßÔµÌî³äÉèÎª¸´ÖÆ×îºóÒ»ÁĞÏñËØ
+
+					//dst.m_pBits[j][i][k] = m_pBits[j][i - N][0]; //×ó±ßÔµÌî³äÉèÎª¸´ÖÆµÚÒ»ÁĞÏñËØ
+					//dst.m_pBits[j][i][w - k - 1] = m_pBits[j][i - N][w - 2 * N - 1];  //µ×±ßÔµÌî³äÉèÎª¸´ÖÆ×îºóÒ»ÁĞÏñËØ
 				}
 			}
 		}
@@ -438,7 +478,7 @@ void MyImage_::RemoveFillTo(MyImage_ &img1, int nFillPara) const
 	int h = img1.GetHeight();
 
 	// ÏÈ´´½¨Êı×é(Í¨µÀ ĞĞ ÁĞ)
-	img1.m_pBits = (BYTE***)new   BYTE**[3];
+	/*img1.m_pBits = (BYTE***)new   BYTE**[3];
 	for (int i = 0; i < 3; i++)
 	{
 		img1.m_pBits[i] = (BYTE**)new  BYTE*[h];
@@ -449,15 +489,25 @@ void MyImage_::RemoveFillTo(MyImage_ &img1, int nFillPara) const
 		{
 			img1.m_pBits[i][j] = new BYTE[w];
 		}
-	}
+	}*/
+
+	img1.m_pBits = new BYTE[w*h * 3]();
+
 	//Ô­Í¼Êı¾İ½øĞĞ¸´ÖÆ
 	for (int j = 0; j < h; j++) //ĞĞ
 	{
 		for (int k = 0; k < w; k++) //ÁĞ
 		{
-			img1.m_pBits[0][j][k] = m_pBits[0][j + nFillPara][k + nFillPara];//B
-			img1.m_pBits[1][j][k] = m_pBits[1][j + nFillPara][k + nFillPara];//G
-			img1.m_pBits[2][j][k] = m_pBits[2][j + nFillPara][k + nFillPara];//R
+			//img1.at(j, k, 0) = m_pBits[0][j + nFillPara][k + nFillPara];//B
+			//img1.at(j, k, 1) = m_pBits[1][j + nFillPara][k + nFillPara];//G
+			//img1.at(j, k, 2) = m_pBits[2][j + nFillPara][k + nFillPara];//R
+
+			img1.at(j, k, 0) = at(j + nFillPara, k + nFillPara, 0);//B
+			img1.at(j, k, 1) = at(j + nFillPara, k + nFillPara, 1);//B
+			img1.at(j, k, 2) = at(j + nFillPara, k + nFillPara, 2);//B
+			//img1.at(j, k, 1) = m_pBits[1][j + nFillPara][k + nFillPara];//G
+			//img1.at(j, k, 2) = m_pBits[2][j + nFillPara][k + nFillPara];//R
+
 		}
 	}
 }

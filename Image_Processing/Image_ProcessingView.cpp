@@ -31,12 +31,12 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_FILE_OPEN, &CImage_ProcessingView::OnFileOpen)
 	ON_COMMAND(ID_FILE_SAVE_AS, &CImage_ProcessingView::OnFileSaveAs)
 	ON_COMMAND(IDM_SHOWRED, &CImage_ProcessingView::OnShowred)
-//	ON_COMMAND(ID_VIEW_TOOLBAR, &CImage_ProcessingView::OnViewToolbar)
-ON_COMMAND(ID_REVERSE, &CImage_ProcessingView::OnReverse)
-ON_WM_CREATE()
-ON_COMMAND(ID_TOGRAY, &CImage_ProcessingView::OnTogray)
-ON_COMMAND(ID_RETRIEVE, &CImage_ProcessingView::OnRetrieve)
-ON_COMMAND(ID_Test, &CImage_ProcessingView::OnTest)
+	//	ON_COMMAND(ID_VIEW_TOOLBAR, &CImage_ProcessingView::OnViewToolbar)
+	ON_COMMAND(ID_REVERSE, &CImage_ProcessingView::OnReverse)
+	ON_WM_CREATE()
+	ON_COMMAND(ID_TOGRAY, &CImage_ProcessingView::OnTogray)
+	ON_COMMAND(ID_RETRIEVE, &CImage_ProcessingView::OnRetrieve)
+	ON_COMMAND(ID_Test, &CImage_ProcessingView::OnTest)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -74,18 +74,18 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-	if(m_bIsProcessed == TRUE) 
+	if (m_bIsProcessed == TRUE)
 	{
 		if (!m_ImageAfter.IsNull())
 		{
-			m_ImageAfter.Draw(pDC->m_hDC,0,0);
+			m_ImageAfter.Draw(pDC->m_hDC, 0, 0);
 		}
 	}
-	else 
+	else
 	{
 		if (!m_Image.IsNull())
 		{
-			m_Image.Draw(pDC->m_hDC,0,0); 
+			m_Image.Draw(pDC->m_hDC, 0, 0);
 		}
 	}
 
@@ -172,11 +172,11 @@ void CImage_ProcessingView::OnFileOpen()
 {
 	// TODO: 在此添加命令处理程序代码
 	CFileDialog dlg(TRUE);    //为打开文件创建一个变量
-	if(IDOK == dlg.DoModal())    //调用函数打开一个对话框，并判断是否打开成功
+	if (IDOK == dlg.DoModal())    //调用函数打开一个对话框，并判断是否打开成功
 	{
-		if(!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
-		
-		if(!m_ImageAfter.IsNull()) m_ImageAfter.Destroy();//清除after变量的数据
+		if (!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
+
+		if (!m_ImageAfter.IsNull()) m_ImageAfter.Destroy();//清除after变量的数据
 		m_bIsProcessed = FALSE;
 		m_bIsGrayed = FALSE;
 		m_strFileNameSave = dlg.GetPathName();
@@ -189,10 +189,10 @@ void CImage_ProcessingView::OnFileOpen()
 		//这里只是加载到数组里，后面的Invalidate(1)再来调用Ondraw函数再来调用MyImage_的Draw方法来画出图片
 		//获得图片的大小，并按其大小设置滚动条的初始窗口大小等参数
 		CSize sizeTotal;
-		int w=m_Image.GetWidth();
-		int h=m_Image.GetHeight();
-		sizeTotal.cx =w;
-		sizeTotal.cy =h;
+		int w = m_Image.GetWidth();
+		int h = m_Image.GetHeight();
+		sizeTotal.cx = w;
+		sizeTotal.cy = h;
 		SetScrollSizes(MM_TEXT, sizeTotal);
 
 		//Window_Image_w=m_Image.GetWidth();//获得图片的初始大小，为放大缩小功能做准备
@@ -212,13 +212,13 @@ void CImage_ProcessingView::OnFileSaveAs()
 		return;
 	}
 	CString strFilter;
-	strFilter ="BMP 位图文件|*.bmp|JPEG 图像文件|*.jpg|GIF 图像文件|*.gif|PNG 图像文件|*.png||";   //
+	strFilter = "BMP 位图文件|*.bmp|JPEG 图像文件|*.jpg|GIF 图像文件|*.gif|PNG 图像文件|*.png||";   //
 	//	strFilter ="所有文件|*.*||";   //
 
-	CFileDialog dlg(FALSE,NULL,NULL,NULL,strFilter);
+	CFileDialog dlg(FALSE, NULL, NULL, NULL, strFilter);
 	//CFileDialog dlg(FALSE,NULL,NULL,NULL);
 
-	if ( IDOK != dlg.DoModal()) 
+	if (IDOK != dlg.DoModal())
 		return;
 	// 如果用户没有指定文件扩展名，则为其添加一个
 	CString strFileName;
@@ -255,20 +255,22 @@ void CImage_ProcessingView::OnFileSaveAs()
 void CImage_ProcessingView::OnShowred()
 {
 	// TODO: 在此添加命令处理程序代码
-	if(m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
 	// TODO: 在此处为本机数据添加绘制代码
-	int w=m_Image.GetWidth();//获得图像的宽度
-	int h=m_Image.GetHeight();//获得图像的高度
-	if(m_ImageAfter.IsNull())
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	if (m_ImageAfter.IsNull())
 		m_Image.CopyTo(m_ImageAfter);
 
-	for (int j=0;j<h;j++)
+	for (int j = 0; j < h; j++)
 	{
-		for (int k=0;k<w;k++)
+		for (int k = 0; k < w; k++)
 		{
-			m_ImageAfter[0][j][k]= m_ImageAfter[2][j][k];//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			m_ImageAfter[1][j][k]= m_ImageAfter[2][j][k];//G
+			m_ImageAfter.at(j, k, 0) = m_ImageAfter.at(j, k, 2);
+			m_ImageAfter.at(j, k, 1) = m_ImageAfter.at(j, k, 2);
+			//m_ImageAfter[0][j][k]= m_ImageAfter[2][j][k];//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			//m_ImageAfter[1][j][k]= m_ImageAfter[2][j][k];//G
 		}
 	}
 	m_bIsProcessed = TRUE;
@@ -297,16 +299,16 @@ int CImage_ProcessingView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CImage_ProcessingView::OnTogray()
 {
 	// TODO: Add your command handler code here
-	if(m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
-	int w=m_Image.GetWidth();//获得图像的宽度
-	int h=m_Image.GetHeight();//获得图像的高度
-	if(m_ImageAfter.IsNull())
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	if (m_ImageAfter.IsNull())
 		m_Image.CopyTo(m_ImageAfter);
 	UINT average = 0;
-	for (int j=0;j<h;j++)
+	for (int j = 0; j < h; j++)
 	{
-		for (int k=0;k<w;k++)
+		for (int k = 0; k < w; k++)
 		{
 			/*-------------------------Your Code Here--------------------------*/
 			//把图像灰度化
@@ -327,7 +329,7 @@ void CImage_ProcessingView::OnTogray()
 void CImage_ProcessingView::OnRetrieve()
 {
 	// TODO: Add your command handler code here
-	if(m_bIsProcessed)
+	if (m_bIsProcessed)
 	{
 		m_bIsProcessed = FALSE;
 		m_bIsGrayed = FALSE;
@@ -341,17 +343,17 @@ void CImage_ProcessingView::OnRetrieve()
 void CImage_ProcessingView::OnReverse()
 {
 	// TODO: Add your command handler code here
-	if(m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
-	int w=m_Image.GetWidth();//获得图像的宽度
-	int h=m_Image.GetHeight();//获得图像的高度
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
 
-	if(m_ImageAfter.IsNull())
+	if (m_ImageAfter.IsNull())
 		m_Image.CopyTo(m_ImageAfter);
 
-	for (int j=0;j<h;j++)
+	for (int j = 0; j < h; j++)
 	{
-		for (int k=0;k<w;k++)
+		for (int k = 0; k < w; k++)
 		{
 			/*-------------------------Your Code Here--------------------------*/
 			//实现图像反像（比如原来是黑色，变成白色）
@@ -377,7 +379,7 @@ void CImage_ProcessingView::OnTest()
 
 	MyImage_ img1;
 	m_ImageAfter.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
-	img1.RemoveFillTo(m_ImageAfter,20);
+	img1.RemoveFillTo(m_ImageAfter, 20);
 	//img1.CopyTo(m_ImageAfter);
 	//m_
 	m_bIsProcessed = TRUE;

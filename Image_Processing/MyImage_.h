@@ -1,7 +1,6 @@
 #pragma once
 class MyImage_
 {
-	friend class CCommon;
 public:
 	MyImage_(void);
 	MyImage_(int w, int h); ////产生黑色
@@ -11,7 +10,7 @@ public:
 	~MyImage_(void);
 
 	//TODO:有了这个之后，应该把m_pBits设置为private,但是之前写的太多了，没办法，就只能将就继续用了
-	BYTE** operator[](int i) { return m_pBits[i]; };  //这里的问题是，返回的二维指针，就算设为const了，还是没法限制不被修改，没办法实现const版本
+	//BYTE** operator[](int i) { return m_pBits[i]; };  //这里的问题是，返回的二维指针，就算设为const了，还是没法限制不被修改，没办法实现const版本
 
 
 	int MyImage_::Load(LPCTSTR pszFileName);//加载图像，参数pszFileName是文件路径及文件名
@@ -48,13 +47,16 @@ public:
 	int MyImage_::GetHeight() const { return m_nHeight; };//返回图像的高度
 	void MyImage_::SetWidth(int w) { m_nWidth = w; };//返回图像的宽度
 	void MyImage_::SetHeight(int h) { m_nHeight = h; };//返回图像的高度
-
+	BYTE &at(int i, int j, int ch) { return m_pBits[i*GetWidth()*3 + j * 3 + ch]; }
+	const BYTE at(int i, int j, int ch)const { return m_pBits[i*GetWidth()*3 + j * 3 + ch]; }
 
 private:
 	bool m_bIsGrayed;
 	int m_nHeight;
 	int m_nWidth;
-	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值
+
+	//BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值
+	BYTE* m_pBits;
 
 	void CreateCImage() const;
 	static CImage s_CImage;
