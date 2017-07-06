@@ -2,7 +2,7 @@
 #include "MyImage_.h"
 #include <iostream>
 
-CImage MyImage_::s_CImage;
+CImage MyImage_::s_CImage; //¶¨Òå¾²Ì¬±äÁ¿
 
 //¸ºÔğ´´½¨Ò»¸öCimageÓÃÓÚÏÔÊ¾»òÕß¼ÓÔØ
 void MyImage_::CreateCImage() const
@@ -57,7 +57,7 @@ MyImage_::~MyImage_(void)
 }
 
 //TODO:enum¸ÃÈçºÎ´¦Àí
-int MyImage_::Load(LPCTSTR pszFileName)
+MyImage_::LoadResult MyImage_::Load(LPCTSTR pszFileName)
 {
 	if (!s_CImage.IsNull()) s_CImage.Destroy();
 	s_CImage.Load(pszFileName);
@@ -128,20 +128,6 @@ void MyImage_::Create( //Ìî³äÊı×é£¬²»¹ÜCImage£¬CimageÖ»¸ºÔğ×îºóÏÔÊ¾µÄÊ±ºòºÍ¼ÓÔØÍ
 	int w = GetWidth();
 	int h = GetHeight();
 
-	// Í¨µÀ ĞĞ ÁĞ,ch,y,x
-	//m_pBits = (BYTE***)new   BYTE**[3];
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	m_pBits[i] = (BYTE**)new  BYTE*[h];
-	//}
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	for (int j = 0; j < h; j++)
-	//	{
-	//		m_pBits[i][j] = new BYTE[w];
-	//	}
-	//}
-
 	//ĞŞ¸ÄÎªÊ¹ÓÃ1Î¬Êı×é£¬Ìá¹©.at½Ó¿Ú£¬ÊµÏÖÀàËÆÓÚOpenCVµÄĞ§¹û
 	m_pBits = new BYTE[w*h * 3]();
 
@@ -157,15 +143,12 @@ void MyImage_::Create( //Ìî³äÊı×é£¬²»¹ÜCImage£¬CimageÖ»¸ºÔğ×îºóÏÔÊ¾µÄÊ±ºòºÍ¼ÓÔØÍ
 			at(j, k, 0) = nCb;
 			at(j, k, 1) = nCg;
 			at(j, k, 2) = nCr;
-			//m_pBits[0][j][k] = nCb;//B
-			//m_pBits.at(j,k,1) = nCg;//G
-			//m_pBits.at(j,k,2) = nCr;//R
 		}
 	}
 }
 
 
-int  MyImage_::Draw(
+MyImage_::DrawResult  MyImage_::Draw(
 	_In_ HDC hDestDC,
 	_In_ int xDest,
 	_In_ int yDest,
@@ -178,18 +161,12 @@ int  MyImage_::Draw(
 	int h = s_CImage.GetHeight();
 	int nrow = s_CImage.GetPitch();//»ñµÃm_CImageÃ¿Ò»ĞĞÏñËØµÄRGBËùÕ¼ÓÃµÄ´æ´¢¿Õ¼äµÄ´óĞ¡
 
-
 	BYTE *psrc = (BYTE *)s_CImage.GetBits();//»ñµÃm_CImage×îºóÒ»ĞĞµÄÏñËØµØÖ·
-
-	/*½«ÈıÎ¬Êı×é¸´ÖÆ½øm_CImage½øĞĞÏÔÊ¾*/
 
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
-			//psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
-			//psrc[j*nrow + k * 3 + 1] = m_pBits.at(j,k,1);//G
-			//psrc[j*nrow + k * 3 + 2] = m_pBits.at(j,k,2);//R
 			psrc[j*nrow + k * 3] = at(j, k, 0);
 			psrc[j*nrow + k * 3 + 1] = at(j, k, 1);
 			psrc[j*nrow + k * 3 + 2] = at(j, k, 2);
@@ -203,7 +180,7 @@ int  MyImage_::Draw(
 	return DRAW_FAIL;
 }
 
-int  MyImage_::Draw(
+MyImage_::DrawResult  MyImage_::Draw(
 	_In_ HDC hDestDC,
 	_In_ int xDest,
 	_In_ int yDest) const
@@ -220,29 +197,13 @@ void MyImage_::Destroy()
 {
 	if (m_pBits != NULL)
 	{
-		//int h = GetHeight();
-		////for   (int   i=0;   i<2;   i++)   //comment by yxp 2016_12_11
-		//for (int i = 0; i < 3; i++)
-		//{
-		//	for (int j = 0; j < h; j++)
-		//	{
-
-		//		delete[] m_pBits[i][j];
-		//		m_pBits[i][j] = NULL;
-		//	}
-		//}
-		//for (int i = 0; i < 3; i++)
-		//{
-		//	delete[] m_pBits[i];
-		//	m_pBits[i] = NULL;
-		//}
 		delete[]  m_pBits;
 		m_pBits = NULL;
 	}
 
 }
 
-int MyImage_::Save(
+MyImage_::SaveResult MyImage_::Save(
 	_In_z_ LPCTSTR pszFileName,
 	_In_ REFGUID guidFileType) const
 {
@@ -257,10 +218,6 @@ int MyImage_::Save(
 	{
 		for (int k = 0; k < w; k++)
 		{
-			//psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
-			//psrc[j*nrow + k * 3 + 1] = m_pBits.at(j,k,1);//G
-			//psrc[j*nrow + k * 3 + 2] = m_pBits.at(j,k,2);//R
-
 			psrc[j*nrow + k * 3] = at(j, k, 0);//B
 			psrc[j*nrow + k * 3 + 1] = at(j, k, 1);//G
 			psrc[j*nrow + k * 3 + 2] = at(j, k, 2);//R
@@ -284,36 +241,15 @@ void MyImage_::CopyTo(MyImage_ &img1) const
 
 	int w = GetWidth();
 	int h = GetHeight();
-
-	/*´´½¨ÈıÎ¬Êı×é²¢½«m_CImage¸´ÖÆ½øÈıÎ¬Êı×é*/
-
-	// Í¨µÀ ĞĞ ÁĞ
-	/*img1.m_pBits = (BYTE***)new   BYTE**[3];
-	for (int i = 0; i < 3; i++)
-	{
-		img1.m_pBits[i] = (BYTE**)new  BYTE*[h];
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < h; j++)
-		{
-			img1.m_pBits[i][j] = new BYTE[w];
-		}
-	}*/
 	img1.m_pBits = new BYTE[w*h * 3]();
 	//¸´ÖÆÍ¼ÏñÊı¾İÊı×é
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
-			//img1.m_pBits[0][j][k] = m_pBits[0][j][k];//B
-			//img1.m_pBits.at(j,k,1) = m_pBits.at(j,k,1);//G
-			//img1.m_pBits.at(j,k,2) = m_pBits.at(j,k,2);//R
-
 			img1.at(j, k, 0) = at(j, k, 0);//B
 			img1.at(j, k, 1) = at(j, k, 1);//G
 			img1.at(j, k, 2) = at(j, k, 2);//R
-
 		}
 	}
 
@@ -325,8 +261,8 @@ void MyImage_::BorderFillTo(MyImage_ &img1, int nFillPara) const
 }
 
 //Ìî³äÄ£Ê½0´ú±í255Ìî³ä£¬1´ú±í0Ìî³ä£¬2´ú±í¸´ÖÆ±ß½çÏñËØÌî³ä
-//²»Ö§³Öinplace!
-void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
+//²»Ö§³Öinplace²Ù×÷!
+void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, FillMode fm) const
 {
 	//TODO:ÕâÀïÓ¦¸ÃÅĞ¶ÏÊÇ×ÔÉíÔõÃ´°ì
 	//ÏÈ¸üĞÂ²ÎÊı
@@ -342,11 +278,11 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 
 	//ÉèÖÃÌî³äÄ£Ê½
 	int nFillColor = 0;
-	if (FillMode == FILL_WHITE)
+	if (fm == FILL_WHITE)
 	{
 		nFillColor = 255;
 	}
-	else if (FillMode == FILL_BLACK)
+	else if (fm == FILL_BLACK)
 	{
 		nFillColor = 0;
 	}
@@ -355,19 +291,6 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 		nFillColor = -1;
 	}
 
-	//´´½¨Êı×é Í¨µÀ ĞĞ ÁĞ
-	/*dst.m_pBits = (BYTE***)new   BYTE**[3];
-	for (int i = 0; i < 3; i++)
-	{
-		dst.m_pBits[i] = (BYTE**)new  BYTE*[h];
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < h; j++)
-		{
-			dst.m_pBits[i][j] = new BYTE[w];
-		}
-	}*/
 	dst.m_pBits = new BYTE[w*h * 3]();
 
 	//Ô­Í¼Êı¾İ½øĞĞ¸´ÖÆ
@@ -375,14 +298,9 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 	{
 		for (int k = N; k < w - N; k++) //ÁĞ
 		{
-			//dst[0][j][k] = m_pBits[0][j - N][k - N];//B
-			//dst.at(j, k, 1) = m_pBits[1][j - N][k - N];//G
-			//dst.at(j, k, 2) = m_pBits[2][j - N][k - N];//R
-
 			dst.at(j, k, 0) = at(j - N, k - N, 0);//B
 			dst.at(j, k, 1) = at(j - N, k - N, 1);//G
 			dst.at(j, k, 2) = at(j - N, k - N, 2);//R
-
 		}
 	}
 
@@ -399,8 +317,6 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 				{
 					dst.at(j, N - k, i) = nFillColor;//ÉÏ±ßÔµ
 					dst.at(j, h - k, i) = nFillColor;//ÏÂ±ßÔµ
-					//dst.m_pBits[j][N - k][i] = nFillColor;//ÉÏ±ßÔµ
-					//dst.m_pBits[j][h - k][i] = nFillColor;//ÏÂ±ßÔµ
 				}
 				else //nFillMode ÔÚ¸´ÖÆ±ßÔµÏñËØµÄÊ±ºòÉèÎª-1
 				{
@@ -408,25 +324,16 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 					{
 						dst.at(j, N - k, i) = at(0, i - N, j);//ÉÏ±ßÔµ
 						dst.at(j, h - k, i) = at(h - 2 * N - 1, i - N, j);//ÏÂ±ßÔµ
-
-						//dst.at(j, N - k, i) = m_pBits[j][0][i - N];//ÉÏ±ßÔµ
-						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][i - N];//ÏÂ±ßÔµ
 					}
 					else if (i < N)
 					{
 						dst.at(j, N - k, i) = at(0, 0, j);//ÉÏ±ßÔµ
 						dst.at(j, h - k, i) = at(h - 2 * N - 1, 0, j);//ÏÂ±ßÔµ
-
-						//dst.at(j, N - k, i) = m_pBits[j][0][0];//ÉÏ±ßÔµ
-						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][0];//ÏÂ±ßÔµ
 					}
 					else if (i > w - 1 - N)
 					{
 						dst.at(j, N - k, i) = at(0, w - 2 * N - 1, j);//ÉÏ±ßÔµ
 						dst.at(j, h - k, i) = at(h - 2 * N - 1, w - 2 * N - 1, j);//ÏÂ±ßÔµ
-
-						//dst.at(j, N - k, i) = m_pBits[j][0][w - 2 * N - 1];//ÉÏ±ßÔµ
-						//dst.at(j, h - k, i) = m_pBits[j][h - 2 * N - 1][w - 2 * N - 1];//ÏÂ±ßÔµ
 					}
 				}
 
@@ -445,17 +352,11 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 				{
 					dst.at(i, k, j) = nFillColor;//×ó±ßÔµ
 					dst.at(i, w - k - 1, j) = nFillColor;//ÓÒ±ßÔµ
-
-					//dst.m_pBits[j][i][k] = nFillColor;//×ó±ßÔµ
-					//dst.m_pBits[j][i][w - k - 1] = nFillColor;//ÓÒ±ßÔµ
 				}
 				else //nFillMode ÔÚ¸´ÖÆ±ßÔµÏñËØµÄÊ±ºòÉèÎª-1
 				{
 					dst.at(i, k, j) = at(i - N, 0, j);//×ó±ßÔµÌî³äÉèÎª¸´ÖÆµÚÒ»ÁĞÏñËØ
 					dst.at(i, w - k - 1, j) = at(i - N, w - 2 * N - 1, j);//µ×±ßÔµÌî³äÉèÎª¸´ÖÆ×îºóÒ»ÁĞÏñËØ
-
-					//dst.m_pBits[j][i][k] = m_pBits[j][i - N][0]; //×ó±ßÔµÌî³äÉèÎª¸´ÖÆµÚÒ»ÁĞÏñËØ
-					//dst.m_pBits[j][i][w - k - 1] = m_pBits[j][i - N][w - 2 * N - 1];  //µ×±ßÔµÌî³äÉèÎª¸´ÖÆ×îºóÒ»ÁĞÏñËØ
 				}
 			}
 		}
@@ -463,50 +364,31 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, int FillMode) const
 
 }
 
-void MyImage_::RemoveFillTo(MyImage_ &img1, int nFillPara) const
+void MyImage_::RemoveFillTo(MyImage_ &dst, int nFillPara) const
 {
 	//ÏÈ¸üĞÂ²ÎÊı
-	if (!img1.IsNull())
-		img1.Destroy();
+	if (!dst.IsNull())
+		dst.Destroy();
 	const int N = nFillPara;
-	img1.SetGrayed(m_bIsGrayed);
-	img1.SetWidth(this->GetWidth() - 2 * N);
-	img1.SetHeight(this->GetHeight() - 2 * N);
+	dst.SetGrayed(m_bIsGrayed);
+	dst.SetWidth(this->GetWidth() - 2 * N);
+	dst.SetHeight(this->GetHeight() - 2 * N);
 
 
-	int w = img1.GetWidth();
-	int h = img1.GetHeight();
+	int w = dst.GetWidth();
+	int h = dst.GetHeight();
 
-	// ÏÈ´´½¨Êı×é(Í¨µÀ ĞĞ ÁĞ)
-	/*img1.m_pBits = (BYTE***)new   BYTE**[3];
-	for (int i = 0; i < 3; i++)
-	{
-		img1.m_pBits[i] = (BYTE**)new  BYTE*[h];
-	}
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < h; j++)
-		{
-			img1.m_pBits[i][j] = new BYTE[w];
-		}
-	}*/
 
-	img1.m_pBits = new BYTE[w*h * 3]();
+	dst.m_pBits = new BYTE[w*h * 3]();
 
 	//Ô­Í¼Êı¾İ½øĞĞ¸´ÖÆ
 	for (int j = 0; j < h; j++) //ĞĞ
 	{
 		for (int k = 0; k < w; k++) //ÁĞ
 		{
-			//img1.at(j, k, 0) = m_pBits[0][j + nFillPara][k + nFillPara];//B
-			//img1.at(j, k, 1) = m_pBits[1][j + nFillPara][k + nFillPara];//G
-			//img1.at(j, k, 2) = m_pBits[2][j + nFillPara][k + nFillPara];//R
-
-			img1.at(j, k, 0) = at(j + nFillPara, k + nFillPara, 0);//B
-			img1.at(j, k, 1) = at(j + nFillPara, k + nFillPara, 1);//B
-			img1.at(j, k, 2) = at(j + nFillPara, k + nFillPara, 2);//B
-			//img1.at(j, k, 1) = m_pBits[1][j + nFillPara][k + nFillPara];//G
-			//img1.at(j, k, 2) = m_pBits[2][j + nFillPara][k + nFillPara];//R
+			dst.at(j, k, 0) = at(j + nFillPara, k + nFillPara, 0);//B
+			dst.at(j, k, 1) = at(j + nFillPara, k + nFillPara, 1);//B
+			dst.at(j, k, 2) = at(j + nFillPara, k + nFillPara, 2);//B
 
 		}
 	}

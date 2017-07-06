@@ -278,9 +278,6 @@ void CImage_ProcessingView::OnShowred()
 }
 
 
-
-
-
 int CImage_ProcessingView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CScrollView::OnCreate(lpCreateStruct) == -1)
