@@ -60,6 +60,9 @@
     <ClInclude Include="MyImage_.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ImagesStock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -78,6 +81,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyImage_.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImagesStock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

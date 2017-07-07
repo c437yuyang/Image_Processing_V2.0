@@ -4,6 +4,7 @@
 
 #pragma once
 #include "MyImage_.h"
+#include "ImagesStock.h" //撤销恢复
 
 class CImage_ProcessingView : public CScrollView
 {
@@ -49,9 +50,8 @@ public:
 public:
 	MyImage_ m_Image,m_ImageAfter;
 	BOOL m_bIsProcessed;
-	BOOL m_bIsGrayed;
-	UINT m_nResDownRate;
-	UINT m_nGrayRate;
+	CImagesStock m_imgStock; //图像历史信息存储
+
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
 private:

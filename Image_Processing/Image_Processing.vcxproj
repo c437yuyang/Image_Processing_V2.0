@@ -105,6 +105,7 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ImagesStock.h" />
     <ClInclude Include="Image_Processing.h" />
     <ClInclude Include="Image_ProcessingDoc.h" />
     <ClInclude Include="Image_ProcessingView.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ImagesStock.cpp" />
     <ClCompile Include="Image_Processing.cpp" />
     <ClCompile Include="Image_ProcessingDoc.cpp" />
     <ClCompile Include="Image_ProcessingView.cpp" />
