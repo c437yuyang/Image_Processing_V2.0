@@ -37,6 +37,8 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_TOGRAY, &CImage_ProcessingView::OnTogray)
 	ON_COMMAND(ID_RETRIEVE, &CImage_ProcessingView::OnRetrieve)
 	ON_COMMAND(ID_Test, &CImage_ProcessingView::OnTest)
+	ON_COMMAND(ID_EDIT_UNDO, &CImage_ProcessingView::OnEditUndo)
+	ON_COMMAND(ID_EDIT_REDO, &CImage_ProcessingView::OnEditRedo)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -46,10 +48,6 @@ CImage_ProcessingView::CImage_ProcessingView()
 {
 	// TODO: 在此处添加构造代码
 	m_strFileNameSave = "";
-	m_bIsProcessed = FALSE;
-	m_nResDownRate = 1;
-	m_bIsGrayed = FALSE;
-	m_nGrayRate = 1;
 }
 
 CImage_ProcessingView::~CImage_ProcessingView()
@@ -74,19 +72,9 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-	if (m_bIsProcessed == TRUE)
+	if (!m_Image.IsNull())
 	{
-		if (!m_ImageAfter.IsNull())
-		{
-			m_ImageAfter.Draw(pDC->m_hDC, 0, 0);
-		}
-	}
-	else
-	{
-		if (!m_Image.IsNull())
-		{
-			m_Image.Draw(pDC->m_hDC, 0, 0);
-		}
+		m_Image.Draw(pDC->m_hDC, 0, 0);
 	}
 
 	return;
@@ -176,9 +164,6 @@ void CImage_ProcessingView::OnFileOpen()
 	{
 		if (!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
 
-		if (!m_ImageAfter.IsNull()) m_ImageAfter.Destroy();//清除after变量的数据
-		m_bIsProcessed = FALSE;
-		m_bIsGrayed = FALSE;
 		m_strFileNameSave = dlg.GetPathName();
 		if (m_Image.Load(m_strFileNameSave) == MyImage_::LOAD_FAIL)
 		{
@@ -194,13 +179,19 @@ void CImage_ProcessingView::OnFileOpen()
 		sizeTotal.cx = w;
 		sizeTotal.cy = h;
 		SetScrollSizes(MM_TEXT, sizeTotal);
-
-		//Window_Image_w=m_Image.GetWidth();//获得图片的初始大小，为放大缩小功能做准备
-		//Window_Image_h=m_Image.GetHeight();//
-
-
-		Invalidate(1); //强制调用ONDRAW函数
+		UpdateState(true);
 	}
+}
+
+void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
+{
+	if (bIsStoreImage)
+	{
+		m_imgStock.AddImageToStock(m_Image);
+	}
+	m_nWidth = m_Image.GetWidth();
+	m_nHeight = m_Image.GetHeight();
+	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
 
@@ -260,21 +251,17 @@ void CImage_ProcessingView::OnShowred()
 	// TODO: 在此处为本机数据添加绘制代码
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
-	if (m_ImageAfter.IsNull())
-		m_Image.CopyTo(m_ImageAfter);
 
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
-			m_ImageAfter.at(j, k, 0) = m_ImageAfter.at(j, k, 2);
-			m_ImageAfter.at(j, k, 1) = m_ImageAfter.at(j, k, 2);
-			//m_ImageAfter[0][j][k]= m_ImageAfter[2][j][k];//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			//m_ImageAfter[1][j][k]= m_ImageAfter[2][j][k];//G
+			m_Image.at(j, k, 0) = m_Image.at(j, k, 2);
+			m_Image.at(j, k, 1) = m_Image.at(j, k, 2);
 		}
 	}
-	m_bIsProcessed = TRUE;
-	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+
+	UpdateState(true);
 }
 
 
@@ -287,7 +274,7 @@ int CImage_ProcessingView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//打开后自动读入一张图
 	CString str("0.jpg");
 	m_Image.Load(str);
-	Invalidate(TRUE);
+	UpdateState(true);
 	return 0;
 }
 
@@ -300,8 +287,8 @@ void CImage_ProcessingView::OnTogray()
 
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
-	if (m_ImageAfter.IsNull())
-		m_Image.CopyTo(m_ImageAfter);
+	if (m_Image.IsNull())
+		m_Image.CopyTo(m_Image);
 	UINT average = 0;
 	for (int j = 0; j < h; j++)
 	{
@@ -317,23 +304,15 @@ void CImage_ProcessingView::OnTogray()
 
 		}
 	}
-	m_bIsGrayed = TRUE;
-	m_bIsProcessed = TRUE;
-	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+	UpdateState(true);
 }
 
 
 void CImage_ProcessingView::OnRetrieve()
 {
 	// TODO: Add your command handler code here
-	if (m_bIsProcessed)
-	{
-		m_bIsProcessed = FALSE;
-		m_bIsGrayed = FALSE;
-		m_ImageAfter.Destroy();
-		Invalidate();
-	}
-	else return;
+	m_imgStock.getFirstImage(m_Image);
+	UpdateState(false);
 }
 
 
@@ -345,40 +324,44 @@ void CImage_ProcessingView::OnReverse()
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
 
-	if (m_ImageAfter.IsNull())
-		m_Image.CopyTo(m_ImageAfter);
-
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
 			/*-------------------------Your Code Here--------------------------*/
 			//实现图像反像（比如原来是黑色，变成白色）
-
-
-
-
+			m_Image.at(j, k, 0) = 255 - m_Image.at(j, k, 0);
+			m_Image.at(j, k, 1) = 255 - m_Image.at(j, k, 1);
+			m_Image.at(j, k, 2) = 255 - m_Image.at(j, k, 2);
 			/*-------------------------Your Code Here--------------------------*/
 
 		}
 	}
-	m_bIsProcessed = TRUE;
-	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+	UpdateState(true);
 }
 
 void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
-
-	if (m_ImageAfter.IsNull())
-		m_Image.CopyTo(m_ImageAfter);
-
 	MyImage_ img1;
-	m_ImageAfter.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
-	img1.RemoveFillTo(m_ImageAfter, 20);
-	//img1.CopyTo(m_ImageAfter);
-	//m_
-	m_bIsProcessed = TRUE;
-	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+	m_Image.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
+	img1.RemoveFillTo(m_Image, 20);
+	UpdateState(true);
+}
+
+
+void CImage_ProcessingView::OnEditUndo()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_imgStock.getPreImage(m_Image))
+		UpdateState(false);
+}
+
+
+void CImage_ProcessingView::OnEditRedo()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_imgStock.getNextImage(m_Image))
+		UpdateState(false);
 }

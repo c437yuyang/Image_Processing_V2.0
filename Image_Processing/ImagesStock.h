@@ -17,6 +17,7 @@ public:
 	int getStockCount() { return m_nImageCount; }
 	bool getPreImage(MyImage_&);
 	bool getNextImage(MyImage_ &);
+	bool getFirstImage(MyImage_ &);
 	void clear() { m_imgs.clear(); m_nIndexCur = -1; m_nImageCount = 0; }
 private:
 	deque<MyImage_> m_queImages;

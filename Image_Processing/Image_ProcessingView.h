@@ -48,9 +48,10 @@ protected:
 public:
 	afx_msg void OnFileOpen();
 public:
-	MyImage_ m_Image,m_ImageAfter;
-	BOOL m_bIsProcessed;
+	MyImage_ m_Image;
 	CImagesStock m_imgStock; //图像历史信息存储
+	int m_nWidth;
+	int m_nHeight;
 
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
@@ -63,6 +64,12 @@ public:
 	afx_msg void OnTogray();
 	afx_msg void OnRetrieve();
 	afx_msg void OnTest();
+
+public:
+	void UpdateState(bool bIsStoreImage);
+
+	afx_msg void OnEditUndo();
+	afx_msg void OnEditRedo();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

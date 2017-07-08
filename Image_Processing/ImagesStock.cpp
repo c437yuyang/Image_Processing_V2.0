@@ -38,6 +38,15 @@ bool CImagesStock::getNextImage(MyImage_ &img)
 
 }
 
+bool CImagesStock::getFirstImage(MyImage_ &dst)
+{
+	if (m_nImageCount > 0)
+	{
+		m_imgs[0].CopyTo(dst);
+	}
+	return false;
+}
+
 int CImagesStock::AddImageToStock(MyImage_ &img)
 {
 	if (m_nIndexCur != m_nImageCount - 1) //在中间位置执行添加，先删除中间位置之后的存储
