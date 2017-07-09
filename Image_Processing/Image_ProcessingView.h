@@ -70,6 +70,7 @@ public:
 
 	afx_msg void OnEditUndo();
 	afx_msg void OnEditRedo();
+	afx_msg void OnFilterAvg();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

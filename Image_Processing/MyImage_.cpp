@@ -313,29 +313,29 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, FillMode fm) const
 	{
 		for (int i = 0; i != w; ++i)//列
 		{
-			for (int j = 0; j != 3; ++j)
+			for (int j = 0; j != 3; ++j)//通道
 			{
 				if (nFillColor == 0 || nFillColor == 255)
 				{
-					dst.at(j, N - k, i) = nFillColor;//上边缘
-					dst.at(j, h - k, i) = nFillColor;//下边缘
+					dst.at(N - k, i, j) = nFillColor;//上边缘
+					dst.at(h - k, i, j) = nFillColor;//下边缘
 				}
 				else //nFillMode 在复制边缘像素的时候设为-1
 				{
 					if (i >= N && i <= w - 1 - N)
 					{
-						dst.at(j, N - k, i) = at(0, i - N, j);//上边缘
-						dst.at(j, h - k, i) = at(h - 2 * N - 1, i - N, j);//下边缘
+						dst.at(N - k, i, j) = at(0, i - N, j);//上边缘
+						dst.at(h - k, i, j) = at(h - 2 * N - 1, i - N, j);//下边缘
 					}
 					else if (i < N)
 					{
-						dst.at(j, N - k, i) = at(0, 0, j);//上边缘
-						dst.at(j, h - k, i) = at(h - 2 * N - 1, 0, j);//下边缘
+						dst.at(N - k, i, j) = at(0, 0, j);//上边缘
+						dst.at(h - k, i, j) = at(h - 2 * N - 1, 0, j);//下边缘
 					}
 					else if (i > w - 1 - N)
 					{
-						dst.at(j, N - k, i) = at(0, w - 2 * N - 1, j);//上边缘
-						dst.at(j, h - k, i) = at(h - 2 * N - 1, w - 2 * N - 1, j);//下边缘
+						dst.at(N - k, i, j) = at(0, w - 2 * N - 1, j);//上边缘
+						dst.at(h - k, i, j) = at(h - 2 * N - 1, w - 2 * N - 1, j);//下边缘
 					}
 				}
 

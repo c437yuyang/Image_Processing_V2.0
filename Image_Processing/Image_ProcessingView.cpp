@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_Test, &CImage_ProcessingView::OnTest)
 	ON_COMMAND(ID_EDIT_UNDO, &CImage_ProcessingView::OnEditUndo)
 	ON_COMMAND(ID_EDIT_REDO, &CImage_ProcessingView::OnEditRedo)
+	ON_COMMAND(ID_FILTER_AVG, &CImage_ProcessingView::OnFilterAvg)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -74,7 +75,8 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (!m_Image.IsNull())
 	{
-		m_Image.Draw(pDC->m_hDC, 0, 0);
+		if (m_Image.Draw(pDC->m_hDC, 0, 0) == MyImage_::DRAW_FAIL)
+			AfxMessageBox(_T("Error when draw the picture！"));
 	}
 
 	return;
@@ -346,15 +348,15 @@ void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	//MyImage_ img1;
-	//m_Image.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
-	//img1.RemoveFillTo(m_Image, 20);
-	//UpdateState(true);
-
 	MyImage_ img1;
-	img1 = m_Image;
-	m_Image = img1;
+	m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
+	img1.CopyTo(m_Image);
 	UpdateState(true);
+
+	//MyImage_ img1;
+	//img1 = m_Image;
+	//m_Image = img1;
+	//UpdateState(true);
 }
 
 
@@ -371,4 +373,51 @@ void CImage_ProcessingView::OnEditRedo()
 	// TODO: 在此添加命令处理程序代码
 	if (m_imgStock.getNextImage(m_Image))
 		UpdateState(false);
+}
+
+
+void CImage_ProcessingView::OnFilterAvg()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+
+	int  nPara = 1;
+
+	int nPixCount = (nPara * 2 + 1) * (nPara * 2 + 1);
+
+	MyImage_ imgBackUp, imgFilled;
+	m_Image.BorderFillTo(imgBackUp, nPara, MyImage_::FILL_COPY); //备份一下
+	m_Image.BorderFillTo(imgFilled, nPara, MyImage_::FILL_COPY);
+
+	int w = imgFilled.GetWidth();
+	int h = imgFilled.GetHeight();
+	//取均值
+
+	for (int i = nPara; i < h - nPara; ++i) //循环次数只有h-2
+	{
+		for (int j = nPara; j < w - nPara; ++j)//循环w-2次
+		{
+			int sum[3] = { 0,0,0 };//三个通道分别的和
+								   //应用模板
+
+			for (int m = i - nPara; m <= i + nPara; m++)
+			{
+				for (int n = j - nPara; n <= j + nPara; n++)
+				{
+					sum[0] += imgFilled.at(m, n, 0);
+					sum[1] += imgFilled.at(m, n, 1);
+					sum[2] += imgFilled.at(m, n, 2);
+				}
+			}
+			sum[0] /= nPixCount;
+			sum[1] /= nPixCount;
+			sum[2] /= nPixCount;
+			imgBackUp.at(i, j, 0) = sum[0];
+			imgBackUp.at(i, j, 1) = sum[1];
+			imgBackUp.at(i, j, 2) = sum[2];
+		}
+	}
+	imgBackUp.RemoveFillTo(m_Image, nPara);
+	UpdateState(true);
+
 }

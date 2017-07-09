@@ -58,7 +58,6 @@ private:
 	bool m_bIsGrayed;
 	int m_nHeight;
 	int m_nWidth;
-
 	BYTE* m_pBits;
 
 	void CreateCImage() const;
