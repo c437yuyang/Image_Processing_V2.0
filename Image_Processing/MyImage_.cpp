@@ -231,6 +231,8 @@ MyImage_::SaveResult MyImage_::Save(
 
 void MyImage_::CopyTo(MyImage_ &img1) const
 {
+	if (img1 == *this) return; //处理自赋值
+
 	if (!img1.IsNull())
 		img1.Destroy();
 
@@ -396,6 +398,34 @@ void MyImage_::RemoveFillTo(MyImage_ &dst, int nFillPara) const
 
 MyImage_& MyImage_::operator=(MyImage_ &img)
 {
-	img.CopyTo(*this);
+	//if (img == *this) { return *this; }
+	//img.CopyTo(*this);
+	//return *this;
+
+	//下面代码根据effecitveC++条款11设计，异常安全且可以处理自赋值
+	BYTE* pOrig = m_pBits;
+	SetGrayed(img.m_bIsGrayed);
+	SetWidth(img.GetWidth());
+	SetHeight(img.GetHeight());
+	int w = GetWidth();
+	int h = GetHeight();
+	m_pBits = new BYTE[w*h * 3]();
+	//复制图像数据数组
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			at(j, k, 0) = img.at(j, k, 0);//B
+			at(j, k, 1) = img.at(j, k, 1);//G
+			at(j, k, 2) = img.at(j, k, 2);//R
+		}
+	}
+
+	delete[] pOrig;
 	return *this;
+}
+
+bool MyImage_::operator==(const MyImage_ & rhs)
+{
+	return m_pBits == rhs.m_pBits;
 }

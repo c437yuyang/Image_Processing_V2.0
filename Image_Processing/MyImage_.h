@@ -14,6 +14,7 @@ public:
 	MyImage_(int w, int h, COLORREF color); //产生单色
 	MyImage_(const MyImage_ &srcImg); //拷贝构造函数
 	MyImage_& MyImage_::operator=(MyImage_ &img);//拷贝赋值运算符
+	bool operator==(const MyImage_ &rhs);
 	~MyImage_(void);
 
 	LoadResult Load(LPCTSTR pszFileName);//加载图像，参数pszFileName是文件路径及文件名

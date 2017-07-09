@@ -346,9 +346,14 @@ void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	//MyImage_ img1;
+	//m_Image.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
+	//img1.RemoveFillTo(m_Image, 20);
+	//UpdateState(true);
+
 	MyImage_ img1;
-	m_Image.BorderFillTo(img1, 20, MyImage_::FILL_BLACK);
-	img1.RemoveFillTo(m_Image, 20);
+	img1 = m_Image;
+	m_Image = img1;
 	UpdateState(true);
 }
 
