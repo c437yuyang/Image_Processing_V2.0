@@ -283,25 +283,27 @@ int CImage_ProcessingView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CImage_ProcessingView::OnTogray()
 {
 	// TODO: Add your command handler code here
-	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	if (m_Image.IsNull() || m_Image.IsGrayed()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
-	if (m_Image.IsNull())
-		m_Image.CopyTo(m_Image);
-	UINT average = 0;
+
+	int avg = 0;
 	for (int j = 0; j < h; j++)
 	{
 		for (int k = 0; k < w; k++)
 		{
 			/*-------------------------Your Code Here--------------------------*/
 			//把图像灰度化
-
-
-
-
+			avg = 0;
+			avg += static_cast<int>(m_Image.at(j, k, 0));
+			avg += static_cast<int>(m_Image.at(j, k, 1));
+			avg += static_cast<int>(m_Image.at(j, k, 2));
+			avg /= 3;
+			m_Image.at(j, k, 0) = static_cast<BYTE>(avg);
+			m_Image.at(j, k, 1) = static_cast<BYTE>(avg);
+			m_Image.at(j, k, 2) = static_cast<BYTE>(avg);
 			/*-------------------------Your Code Here--------------------------*/
-
 		}
 	}
 	UpdateState(true);
