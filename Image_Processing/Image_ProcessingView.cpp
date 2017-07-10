@@ -188,9 +188,7 @@ void CImage_ProcessingView::OnFileOpen()
 void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
 {
 	if (bIsStoreImage)
-	{
 		m_imgStock.AddImageToStock(m_Image);
-	}
 	m_nWidth = m_Image.GetWidth();
 	m_nHeight = m_Image.GetHeight();
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像

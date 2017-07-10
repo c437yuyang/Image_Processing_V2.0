@@ -159,7 +159,8 @@ MyImage_::DrawResult  MyImage_::Draw(
 	if (s_CImage.IsNull() || IsNull()) return DRAW_FAIL;
 	int w = s_CImage.GetWidth();
 	int h = s_CImage.GetHeight();
-	int nrow = s_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
+	//获得m_CImage每一行像素的RGB所占用的存储空间的大小,这里取得的nrow是负值，才能跟后面的getbits是最后一行相配合
+	int nrow = s_CImage.GetPitch();
 
 	BYTE *psrc = (BYTE *)s_CImage.GetBits();//获得m_CImage最后一行的像素地址
 
@@ -173,7 +174,9 @@ MyImage_::DrawResult  MyImage_::Draw(
 		}
 	}
 
-	/*将三维数组复制进m_CImage*/
+	//memcpy_s(psrc - w * (h - 1) * 3, w * h * 3, m_pBits, w * h * 3); 
+	//这里因为位图是从下到上的数据，所以直接用memcpy实现不了，需要逆向复制的函数才行
+
 
 	if (s_CImage.Draw(hDestDC, xDest, yDest, nDestWidth, nDestHeight))
 		return DRAW_SUCCESS;
@@ -244,16 +247,19 @@ void MyImage_::CopyTo(MyImage_ &img1) const
 	int w = GetWidth();
 	int h = GetHeight();
 	img1.m_pBits = new BYTE[w*h * 3]();
-	//复制图像数据数组
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
-			img1.at(j, k, 0) = at(j, k, 0);//B
-			img1.at(j, k, 1) = at(j, k, 1);//G
-			img1.at(j, k, 2) = at(j, k, 2);//R
-		}
-	}
+
+
+	////复制图像数据数组
+	//for (int j = 0; j < h; j++)
+	//{
+	//	for (int k = 0; k < w; k++)
+	//	{
+	//		img1.at(j, k, 0) = at(j, k, 0);//B
+	//		img1.at(j, k, 1) = at(j, k, 1);//G
+	//		img1.at(j, k, 2) = at(j, k, 2);//R
+	//	}
+	//}
+	memcpy_s(img1.m_pBits, w * h * 3, m_pBits, w * h * 3);
 
 }
 
@@ -338,7 +344,6 @@ void MyImage_::BorderFillTo(MyImage_ &dst, int nFillPara, FillMode fm) const
 						dst.at(h - k, i, j) = at(h - 2 * N - 1, w - 2 * N - 1, j);//下边缘
 					}
 				}
-
 			}
 		}
 	}
@@ -376,51 +381,50 @@ void MyImage_::RemoveFillTo(MyImage_ &dst, int nFillPara) const
 	dst.SetWidth(this->GetWidth() - 2 * N);
 	dst.SetHeight(this->GetHeight() - 2 * N);
 
-
 	int w = dst.GetWidth();
 	int h = dst.GetHeight();
 
-
-	dst.m_pBits = new BYTE[w*h * 3]();
+	dst.m_pBits = new BYTE[w * h * 3]();
 
 	//原图数据进行复制
 	for (int j = 0; j < h; j++) //行
 	{
 		for (int k = 0; k < w; k++) //列
 		{
-			dst.at(j, k, 0) = at(j + nFillPara, k + nFillPara, 0);//B
-			dst.at(j, k, 1) = at(j + nFillPara, k + nFillPara, 1);//B
-			dst.at(j, k, 2) = at(j + nFillPara, k + nFillPara, 2);//B
-
+			dst.at(j, k, 0) = at(j + N, k + N, 0);//B
+			dst.at(j, k, 1) = at(j + N, k + N, 1);//B
+			dst.at(j, k, 2) = at(j + N, k + N, 2);//B
 		}
 	}
 }
 
-MyImage_& MyImage_::operator=(MyImage_ &img)
+MyImage_& MyImage_::operator=(const MyImage_ &img)
 {
 	//if (img == *this) { return *this; }
 	//img.CopyTo(*this);
 	//return *this;
 
-	//下面代码根据effecitveC++条款11设计，异常安全且可以处理自赋值
+	//下面代码根据EffecitveC++条款11设计，异常安全且可以处理自赋值
 	BYTE* pOrig = m_pBits;
 	SetGrayed(img.m_bIsGrayed);
 	SetWidth(img.GetWidth());
 	SetHeight(img.GetHeight());
 	int w = GetWidth();
 	int h = GetHeight();
-	m_pBits = new BYTE[w*h * 3]();
-	//复制图像数据数组
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
-			at(j, k, 0) = img.at(j, k, 0);//B
-			at(j, k, 1) = img.at(j, k, 1);//G
-			at(j, k, 2) = img.at(j, k, 2);//R
-		}
-	}
+	m_pBits = new BYTE[w * h * 3]();
 
+	//复制图像数据数组
+	//for (int j = 0; j < h; j++)
+	//{
+	//	for (int k = 0; k < w; k++)
+	//	{
+	//		at(j, k, 0) = img.at(j, k, 0);//B
+	//		at(j, k, 1) = img.at(j, k, 1);//G
+	//		at(j, k, 2) = img.at(j, k, 2);//R
+	//	}
+	//}
+
+	memcpy_s(img.m_pBits, w * h * 3, m_pBits, w * h * 3);
 	delete[] pOrig;
 	return *this;
 }

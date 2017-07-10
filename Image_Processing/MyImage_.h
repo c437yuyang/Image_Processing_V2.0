@@ -1,4 +1,8 @@
 #pragma once
+//TODO:1.直接改写operator(int,int,int),不使用at(int,int,int)
+//2.把m_pBits换成vector进行管理(vector貌似不好，因为不需要动态变大通常来说，用新标准的array?)
+//3.把m_pBits用智能指针管理
+
 class MyImage_
 {
 
@@ -13,7 +17,7 @@ public:
 	MyImage_(int w, int h); ////产生黑色
 	MyImage_(int w, int h, COLORREF color); //产生单色
 	MyImage_(const MyImage_ &srcImg); //拷贝构造函数
-	MyImage_& MyImage_::operator=(MyImage_ &img);//拷贝赋值运算符
+	MyImage_& MyImage_::operator=(const MyImage_ &img);//拷贝赋值运算符
 	bool operator==(const MyImage_ &rhs);
 	~MyImage_(void);
 
