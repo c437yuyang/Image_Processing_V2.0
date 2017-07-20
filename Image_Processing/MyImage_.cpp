@@ -129,7 +129,7 @@ void MyImage_::Create( //Ìî³äÊý×é£¬²»¹ÜCImage£¬CimageÖ»¸ºÔð×îºóÏÔÊ¾µÄÊ±ºòºÍ¼ÓÔØÍ
 	int h = GetHeight();
 
 	//ÐÞ¸ÄÎªÊ¹ÓÃ1Î¬Êý×é£¬Ìá¹©.at½Ó¿Ú£¬ÊµÏÖÀàËÆÓÚOpenCVµÄÐ§¹û
-	m_pBits = new BYTE[w*h * 3]();
+	m_pBits = new BYTE[w * h * 3]();
 
 
 	int nCb = (color & 0x00ff0000) >> 16;

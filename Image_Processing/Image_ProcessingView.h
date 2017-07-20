@@ -69,14 +69,19 @@ public:
 	afx_msg void OnTest();
 
 public:
+#pragma region 状态更新函数
 	void UpdateState(bool bIsStoreImage);
-
+	void ChangeScrollSize();
+	void UpdateStatusBar(CDC *pDC);
+#pragma endregion
 	afx_msg void OnEditUndo();
 	afx_msg void OnEditRedo();
 	afx_msg void OnFilterAvg();
 	afx_msg void OnSaliencyLc();
 	afx_msg void OnSegmentSlic();
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+
+
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

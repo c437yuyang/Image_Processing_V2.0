@@ -16,6 +16,10 @@
 #define new DEBUG_NEW
 #endif
 
+#pragma region 需要包含的头文件
+#include "MainFrm.h"
+#pragma endregion
+
 
 #pragma region 算法类头文件
 #include "SaliencyDetection.h"
@@ -59,7 +63,7 @@ END_MESSAGE_MAP()
 // CImage_ProcessingView 构造/析构
 
 CImage_ProcessingView::CImage_ProcessingView()
-	: m_strFileNameSave(_T("")),m_imgScaleViewer(1.0)
+	: m_strFileNameSave(_T("")), m_imgScaleViewer(1.0)
 {
 	// TODO: 在此处添加构造代码
 	m_strFileNameSave = "";
@@ -89,11 +93,12 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (!m_Image.IsNull())
 	{
-		m_imgScaleViewer.SetNeedToUpdate();
+
 		m_imgScaleViewer.SetImage(m_Image);
 		//m_imgScaleViewer.SetScale() //SetScale应该在操作的时候设置，然后状态栏有各显示
 		if (m_imgScaleViewer.Draw(pDC->m_hDC) == MyImage_::DRAW_FAIL)
 			AfxMessageBox(_T("Error when draw the picture！"));
+		ChangeScrollSize();
 	}
 
 	return;
@@ -192,12 +197,6 @@ void CImage_ProcessingView::OnFileOpen()
 		//获得图片的地址，并且加载图片
 		//这里只是加载到数组里，后面的Invalidate(1)再来调用Ondraw函数再来调用MyImage_的Draw方法来画出图片
 		//获得图片的大小，并按其大小设置滚动条的初始窗口大小等参数
-		CSize sizeTotal;
-		int w = m_Image.GetWidth();
-		int h = m_Image.GetHeight();
-		sizeTotal.cx = w;
-		sizeTotal.cy = h;
-		SetScrollSizes(MM_TEXT, sizeTotal);
 		UpdateState(true);
 	}
 }
@@ -206,9 +205,10 @@ void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
 {
 	if (bIsStoreImage)
 		m_imgStock.AddImageToStock(m_Image);
-	m_imgScaleViewer.SetNeedToUpdate();
 	m_nWidth = m_Image.GetWidth();
 	m_nHeight = m_Image.GetHeight();
+	m_imgScaleViewer.SetNeedToUpdateScaleImage();
+	ChangeScrollSize();
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
@@ -368,7 +368,7 @@ void CImage_ProcessingView::OnTest()
 	//m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
 	//img1.CopyTo(m_Image);
 
-	m_Image.Create(100, 100, RGB(255,0,128));
+	m_Image.Create(100, 100, RGB(255, 0, 128));
 
 	UpdateState(true);
 }
@@ -488,7 +488,7 @@ void CImage_ProcessingView::OnSegmentSlic()
 	int *kLables = new int[w*h]();
 	int numLabels(0), weight = 0 /*暂时没用*/, color = 222;
 	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, nSpNum, weight);
-	
+
 	UINT* SegmentResult = new UINT[w*h];
 	slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);
 
@@ -496,7 +496,7 @@ void CImage_ProcessingView::OnSegmentSlic()
 	{
 		for (int j = 0; j != w; ++j)
 		{
-			if (SegmentResult[i*w + j] == color) 
+			if (SegmentResult[i*w + j] == color)
 			{
 				m_Image.at(i, j, 0) = m_Image.at(i, j, 1) = 0;
 				m_Image.at(i, j, 2) = 255;
@@ -507,7 +507,6 @@ void CImage_ProcessingView::OnSegmentSlic()
 	delete[] SegmentResult;
 	delete[] kLables;
 	UpdateState(true);
-
 }
 
 
@@ -518,24 +517,26 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	//按住ctrl+滚轮实现缩放图像
 	if (nFlags == MK_CONTROL && zDelta < 0)
 	{
-		if (m_imgScaleViewer.GetScale() > 0.2) 
+		if (m_imgScaleViewer.GetScale() > 0.2)
 		{
-			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() - 0.2);
-			m_imgScaleViewer.SetNeedToUpdate();
+			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() - 0.1);
+			if (m_imgScaleViewer.GetScale() != 1.0)
+				m_imgScaleViewer.SetNeedToUpdateScaleImage();
 			UpdateState(false);
 		}
-		
+
 	}
 	else if (nFlags == MK_CONTROL && zDelta > 0)
 	{
-		if (m_imgScaleViewer.GetScale() < 3.0) 
+		if (m_imgScaleViewer.GetScale() < 2.0)
 		{
-			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() + 0.2);
-			m_imgScaleViewer.SetNeedToUpdate();
+			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() + 0.1);
+			if (m_imgScaleViewer.GetScale() != 1.0)
+				m_imgScaleViewer.SetNeedToUpdateScaleImage();
 			UpdateState(false);
 
 		}
-		
+
 	}
 	else if (nFlags == MK_SHIFT && zDelta < 0) //朝右
 	{
@@ -567,4 +568,30 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		//}
 	}
 	return CScrollView::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+
+void CImage_ProcessingView::ChangeScrollSize()
+{
+	CSize sizeTotal;
+	sizeTotal.cx = static_cast<int>(m_nWidth*m_imgScaleViewer.GetScale()); //这里要设置为实际显示的大小才行
+	sizeTotal.cy = static_cast<int>(m_nHeight*m_imgScaleViewer.GetScale()); //起始时未打开图片的情况下 View客户区小于300x300就设置滚轮
+	SetScrollSizes(MM_TEXT, sizeTotal);
+}
+
+void CImage_ProcessingView::UpdateStatusBar(CDC *pDC)
+{
+	//CString strImgSize;
+	//strImgSize.Format(_T("长:%d,宽:%d"), m_Image.GetHeight(), m_Image.GetWidth());
+
+	//CClientDC dc(this);
+	//CSize sz = dc.GetTextExtent(strImgSize);
+
+	//CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	//CMFCStatusBar *pStatusBar = (CMFCStatusBar *)(pFrame->GetStatusBar());
+
+	//int index = pStatusBar->CommandToIndex(ID_INDICATOR_IMGSIZE);
+	//pStatusBar->SetPaneInfo(index, ID_INDICATOR_IMGSIZE, SBPS_NORMAL, sz.cx);
+	//pStatusBar->SetPaneText(index, strImgSize);
+	//ReleaseDC(pDC);
 }

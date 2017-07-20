@@ -125,9 +125,9 @@ void Interpolate::PicZoom_ThreeOrder0(const BYTE * src, BYTE * dst, int w1, int 
 
 			TRGB32 pt = ThreeOrder0(src, srcx, srcy, w1, h1);
 
-			dst[y*w2 * 3 + h2 * 3 + 0] = pt.b;
-			dst[y*w2 * 3 + h2 * 3 + 1] = pt.g;
-			dst[y*w2 * 3 + h2 * 3 + 2] = pt.r;
+			dst[y * w2 * 3 + x * 3 + 0] = pt.b;
+			dst[y * w2 * 3 + x * 3 + 1] = pt.g;
+			dst[y * w2 * 3 + x * 3 + 2] = pt.r;
 		}
 	}
 }

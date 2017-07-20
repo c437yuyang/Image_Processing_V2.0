@@ -45,6 +45,12 @@ protected:
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
 
+#pragma region 自己的接口部分
+public:
+	CMFCStatusBar* GetStatusBar() { return &m_wndStatusBar; }
+#pragma endregion
+
+
 };
 
 
