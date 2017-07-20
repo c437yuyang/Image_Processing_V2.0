@@ -540,34 +540,31 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		}
 
 	}
+	//按住shift实现滚轮图像左右滚动
 	else if (nFlags == MK_SHIFT && zDelta < 0) //朝右
 	{
-		////OnHScroll()
-		//int minpos, maxpos, curpos;
-		//GetScrollRange(SB_HORZ, &minpos, &maxpos);
-		//maxpos = GetScrollLimit(SB_HORZ);
-		//curpos = GetScrollPos(SB_HORZ);
-		//if (curpos + 10 < maxpos)
-		//{
-		//	SetScrollPos(SB_HORZ, curpos + 10);
-		//	Invalidate(FALSE);
-		//	//UpdateState(false);
-		//}
-		///*	cout << npos << endl;*/
+		//OnHScroll()
+		int minpos, maxpos, curpos;
+		GetScrollRange(SB_HORZ, &minpos, &maxpos);
+		maxpos = GetScrollLimit(SB_HORZ);
+		curpos = GetScrollPos(SB_HORZ);
+		if (curpos + 10 < maxpos)
+		{
+			SetScrollPos(SB_HORZ, curpos + 10);
+			Invalidate(TRUE); //这里不需updatestate(),但是需要重画一下，在release模式下，更新太快会出现错误
+		}
 	}
 	else if (nFlags == MK_SHIFT && zDelta > 0) //朝左
 	{
-		//int minpos, maxpos, curpos;
-		//GetScrollRange(SB_HORZ, &minpos, &maxpos);
-		//maxpos = GetScrollLimit(SB_HORZ);
-		//curpos = GetScrollPos(SB_HORZ);
-		//if (curpos - 10 > minpos)
-		//{
-		//	SetScrollPos(SB_HORZ, curpos - 10);
-		//	Invalidate(FALSE);
-
-		//	//UpdateState(false);
-		//}
+		int minpos, maxpos, curpos;
+		GetScrollRange(SB_HORZ, &minpos, &maxpos);
+		maxpos = GetScrollLimit(SB_HORZ);
+		curpos = GetScrollPos(SB_HORZ);
+		if (curpos - 10 > minpos)
+		{
+			SetScrollPos(SB_HORZ, curpos - 10);
+			Invalidate(TRUE);
+		}
 	}
 	return CScrollView::OnMouseWheel(nFlags, zDelta, pt);
 }
