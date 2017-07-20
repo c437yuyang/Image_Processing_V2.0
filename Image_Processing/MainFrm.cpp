@@ -30,9 +30,7 @@ END_MESSAGE_MAP()
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // 状态行指示器
-	ID_INDICATOR_CAPS,
-	ID_INDICATOR_NUM,
-	ID_INDICATOR_SCRL,
+	ID_INDICATOR_IMGSIZE,		//显示图片分辨率
 };
 
 // CMainFrame 构造/析构

@@ -99,6 +99,7 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 		if (m_imgScaleViewer.Draw(pDC->m_hDC) == MyImage_::DRAW_FAIL)
 			AfxMessageBox(_T("Error when draw the picture£¡"));
 		ChangeScrollSize();
+		UpdateStatusBar(pDC);
 	}
 
 	return;
@@ -581,17 +582,17 @@ void CImage_ProcessingView::ChangeScrollSize()
 
 void CImage_ProcessingView::UpdateStatusBar(CDC *pDC)
 {
-	//CString strImgSize;
-	//strImgSize.Format(_T("³¤:%d,¿í:%d"), m_Image.GetHeight(), m_Image.GetWidth());
+	CString strImgSize;
+	strImgSize.Format(_T("³¤:%d,¿í:%d"), m_Image.GetHeight(), m_Image.GetWidth());
 
-	//CClientDC dc(this);
-	//CSize sz = dc.GetTextExtent(strImgSize);
+	CClientDC dc(this);
+	CSize sz = dc.GetTextExtent(strImgSize);
 
-	//CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
-	//CMFCStatusBar *pStatusBar = (CMFCStatusBar *)(pFrame->GetStatusBar());
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	CMFCStatusBar *pStatusBar = (CMFCStatusBar *)(pFrame->GetStatusBar());
 
-	//int index = pStatusBar->CommandToIndex(ID_INDICATOR_IMGSIZE);
-	//pStatusBar->SetPaneInfo(index, ID_INDICATOR_IMGSIZE, SBPS_NORMAL, sz.cx);
-	//pStatusBar->SetPaneText(index, strImgSize);
-	//ReleaseDC(pDC);
+	int index = pStatusBar->CommandToIndex(ID_INDICATOR_IMGSIZE);
+	pStatusBar->SetPaneInfo(index, ID_INDICATOR_IMGSIZE, SBPS_NORMAL, sz.cx);
+	pStatusBar->SetPaneText(index, strImgSize);
+	ReleaseDC(pDC);
 }
