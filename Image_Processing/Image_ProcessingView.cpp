@@ -17,6 +17,12 @@
 #endif
 
 
+#pragma region 算法类头文件
+#include "SaliencyDetection.h"
+
+#pragma endregion
+
+
 // CImage_ProcessingView
 
 IMPLEMENT_DYNCREATE(CImage_ProcessingView, CScrollView)
@@ -40,6 +46,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_EDIT_UNDO, &CImage_ProcessingView::OnEditUndo)
 	ON_COMMAND(ID_EDIT_REDO, &CImage_ProcessingView::OnEditRedo)
 	ON_COMMAND(ID_FILTER_AVG, &CImage_ProcessingView::OnFilterAvg)
+	ON_COMMAND(ID_SALIENCY_LC, &CImage_ProcessingView::OnSaliencyLc)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -350,11 +357,6 @@ void CImage_ProcessingView::OnTest()
 	m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
 	img1.CopyTo(m_Image);
 	UpdateState(true);
-
-	//MyImage_ img1;
-	//img1 = m_Image;
-	//m_Image = img1;
-	//UpdateState(true);
 }
 
 
@@ -416,6 +418,33 @@ void CImage_ProcessingView::OnFilterAvg()
 		}
 	}
 	imgBackUp.RemoveFillTo(m_Image, nPara);
+	UpdateState(true);
+
+}
+
+
+
+void CImage_ProcessingView::OnSaliencyLc()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+
+	/*MyImage_ imgSaliencyLC(m_Image.GetWidth(), m_Image.GetHeight());*/
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+	BYTE* SaliencyMap = new BYTE[w * h]();
+
+	SalientRegionDetectionBasedonLC(m_Image.data(), SaliencyMap, w, h, 1);
+
+	for (int i=0;i!=h;++i)
+	{
+		for (int j=0;j!=w;++j)
+		{
+			m_Image.at(i, j, 0) = SaliencyMap[i*w + j];
+			m_Image.at(i, j, 1) = SaliencyMap[i*w + j];
+			m_Image.at(i, j, 2) = SaliencyMap[i*w + j];
+		}
+	}
 	UpdateState(true);
 
 }

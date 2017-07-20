@@ -57,7 +57,7 @@ public:
 	void SetHeight(int h) { m_nHeight = h; };
 	BYTE &at(int i, int j, int ch) { return m_pBits[i*GetWidth() * 3 + j * 3 + ch]; }
 	const BYTE at(int i, int j, int ch)const { return m_pBits[i*GetWidth() * 3 + j * 3 + ch]; }
-
+	BYTE* data() const { return m_pBits; } //增加一个返回原始指针的操作
 private:
 	bool m_bIsGrayed;
 	int m_nHeight;

@@ -112,6 +112,7 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyImage_.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SaliencyDetection.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
