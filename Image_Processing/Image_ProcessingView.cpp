@@ -22,6 +22,11 @@
 #include "SLIC.h"
 #pragma endregion
 
+#pragma region 参数设置类窗口头文件
+#include "DlgSLICParamsSet.h"
+#pragma endregion
+
+
 
 // CImage_ProcessingView
 
@@ -455,6 +460,12 @@ void CImage_ProcessingView::OnSegmentSlic()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;
+	int nSpNum = 200;
+	CDlgSLICParamsSet dlg;
+	if (dlg.DoModal() == IDCANCEL) return;
+	else
+		nSpNum = dlg.m_nSpNum;
+
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
 
@@ -468,7 +479,7 @@ void CImage_ProcessingView::OnSegmentSlic()
 	SLIC slic;
 	int *kLables = new int[w*h]();
 	int numLabels(0), weight = 0 /*暂时没用*/, color = 222;
-	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, 500, weight);
+	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, nSpNum, weight);
 	
 	UINT* SegmentResult = new UINT[w*h];
 	slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);

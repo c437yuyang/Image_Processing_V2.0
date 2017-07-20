@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="DlgSetParams">
+      <UniqueIdentifier>{30001129-77dc-42fe-aa26-527c902af6a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Algorithms">
+      <UniqueIdentifier>{acf04b6d-5812-46e3-ad09-09badfd7383f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{023a7ab3-c5c7-4ae2-8add-1feb4201ed88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -57,17 +66,20 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MyImage_.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="SLIC.h">
+      <Filter>Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="ImagesStock.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="MyImage_.h">
+      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="SaliencyDetection.h">
-      <Filter>头文件</Filter>
+      <Filter>Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="SLIC.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="ImagesStock.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgSLICParamsSet.h">
+      <Filter>DlgSetParams</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,14 +98,17 @@
     <ClCompile Include="Image_ProcessingView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SLIC.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
     <ClCompile Include="MyImage_.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="ImagesStock.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="SLIC.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="DlgSLICParamsSet.cpp">
+      <Filter>DlgSetParams</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

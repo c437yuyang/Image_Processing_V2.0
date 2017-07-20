@@ -105,6 +105,7 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DlgSLICParamsSet.h" />
     <ClInclude Include="ImagesStock.h" />
     <ClInclude Include="Image_Processing.h" />
     <ClInclude Include="Image_ProcessingDoc.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DlgSLICParamsSet.cpp" />
     <ClCompile Include="ImagesStock.cpp" />
     <ClCompile Include="Image_Processing.cpp" />
     <ClCompile Include="Image_ProcessingDoc.cpp" />
