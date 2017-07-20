@@ -53,12 +53,13 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_FILTER_AVG, &CImage_ProcessingView::OnFilterAvg)
 	ON_COMMAND(ID_SALIENCY_LC, &CImage_ProcessingView::OnSaliencyLc)
 	ON_COMMAND(ID_SEGMENT_SLIC, &CImage_ProcessingView::OnSegmentSlic)
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
 
 CImage_ProcessingView::CImage_ProcessingView()
-	: m_strFileNameSave(_T(""))
+	: m_strFileNameSave(_T("")),m_imgScaleViewer(1.0)
 {
 	// TODO: 在此处添加构造代码
 	m_strFileNameSave = "";
@@ -88,7 +89,10 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (!m_Image.IsNull())
 	{
-		if (m_Image.Draw(pDC->m_hDC, 0, 0) == MyImage_::DRAW_FAIL)
+		m_imgScaleViewer.SetNeedToUpdate();
+		m_imgScaleViewer.SetImage(m_Image);
+		//m_imgScaleViewer.SetScale() //SetScale应该在操作的时候设置，然后状态栏有各显示
+		if (m_imgScaleViewer.Draw(pDC->m_hDC) == MyImage_::DRAW_FAIL)
 			AfxMessageBox(_T("Error when draw the picture！"));
 	}
 
@@ -202,6 +206,7 @@ void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
 {
 	if (bIsStoreImage)
 		m_imgStock.AddImageToStock(m_Image);
+	m_imgScaleViewer.SetNeedToUpdate();
 	m_nWidth = m_Image.GetWidth();
 	m_nHeight = m_Image.GetHeight();
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
@@ -359,9 +364,12 @@ void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	MyImage_ img1;
-	m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
-	img1.CopyTo(m_Image);
+	//MyImage_ img1;
+	//m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
+	//img1.CopyTo(m_Image);
+
+	m_Image.Create(100, 100, RGB(255,0,128));
+
 	UpdateState(true);
 }
 
@@ -500,4 +508,63 @@ void CImage_ProcessingView::OnSegmentSlic()
 	delete[] kLables;
 	UpdateState(true);
 
+}
+
+
+BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	//按住ctrl+滚轮实现缩放图像
+	if (nFlags == MK_CONTROL && zDelta < 0)
+	{
+		if (m_imgScaleViewer.GetScale() > 0.2) 
+		{
+			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() - 0.2);
+			m_imgScaleViewer.SetNeedToUpdate();
+			UpdateState(false);
+		}
+		
+	}
+	else if (nFlags == MK_CONTROL && zDelta > 0)
+	{
+		if (m_imgScaleViewer.GetScale() < 3.0) 
+		{
+			m_imgScaleViewer.SetScale(m_imgScaleViewer.GetScale() + 0.2);
+			m_imgScaleViewer.SetNeedToUpdate();
+			UpdateState(false);
+
+		}
+		
+	}
+	else if (nFlags == MK_SHIFT && zDelta < 0) //朝右
+	{
+		////OnHScroll()
+		//int minpos, maxpos, curpos;
+		//GetScrollRange(SB_HORZ, &minpos, &maxpos);
+		//maxpos = GetScrollLimit(SB_HORZ);
+		//curpos = GetScrollPos(SB_HORZ);
+		//if (curpos + 10 < maxpos)
+		//{
+		//	SetScrollPos(SB_HORZ, curpos + 10);
+		//	Invalidate(FALSE);
+		//	//UpdateState(false);
+		//}
+		///*	cout << npos << endl;*/
+	}
+	else if (nFlags == MK_SHIFT && zDelta > 0) //朝左
+	{
+		//int minpos, maxpos, curpos;
+		//GetScrollRange(SB_HORZ, &minpos, &maxpos);
+		//maxpos = GetScrollLimit(SB_HORZ);
+		//curpos = GetScrollPos(SB_HORZ);
+		//if (curpos - 10 > minpos)
+		//{
+		//	SetScrollPos(SB_HORZ, curpos - 10);
+		//	Invalidate(FALSE);
+
+		//	//UpdateState(false);
+		//}
+	}
+	return CScrollView::OnMouseWheel(nFlags, zDelta, pt);
 }

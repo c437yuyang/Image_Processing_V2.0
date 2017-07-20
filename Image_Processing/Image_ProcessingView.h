@@ -5,6 +5,7 @@
 #pragma once
 #include "MyImage_.h"
 #include "ImagesStock.h" //撤销恢复
+#include "ImageScaleViewer.h" //控制图像缩放以及显示图像的类
 
 class CImage_ProcessingView : public CScrollView
 {
@@ -47,17 +48,19 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnFileOpen();
-public:
-	MyImage_ m_Image;
-	CImagesStock m_imgStock; //图像历史信息存储
-	int m_nWidth;
-	int m_nHeight;
-
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
 private:
 	// save the original file's name
 	CString m_strFileNameSave;
+#pragma region utility里面的一些工具
+	MyImage_ m_Image;
+	CImagesStock m_imgStock; //图像历史信息存储，用于撤销恢复  
+	ImageScaleViewer m_imgScaleViewer; //控制图像显示及缩放
+#pragma endregion
+
+	int m_nWidth;
+	int m_nHeight;
 public:
 	afx_msg void OnReverse();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -73,6 +76,7 @@ public:
 	afx_msg void OnFilterAvg();
 	afx_msg void OnSaliencyLc();
 	afx_msg void OnSegmentSlic();
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

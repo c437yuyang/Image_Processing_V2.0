@@ -81,6 +81,12 @@
     <ClInclude Include="DlgSLICParamsSet.h">
       <Filter>DlgSetParams</Filter>
     </ClInclude>
+    <ClInclude Include="ImageScaleViewer.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpolation.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -109,6 +115,12 @@
     </ClCompile>
     <ClCompile Include="DlgSLICParamsSet.cpp">
       <Filter>DlgSetParams</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageScaleViewer.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpolation.cpp">
+      <Filter>Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

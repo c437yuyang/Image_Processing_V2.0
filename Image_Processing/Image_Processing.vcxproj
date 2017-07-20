@@ -106,10 +106,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgSLICParamsSet.h" />
+    <ClInclude Include="ImageScaleViewer.h" />
     <ClInclude Include="ImagesStock.h" />
     <ClInclude Include="Image_Processing.h" />
     <ClInclude Include="Image_ProcessingDoc.h" />
     <ClInclude Include="Image_ProcessingView.h" />
+    <ClInclude Include="Interpolation.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyImage_.h" />
     <ClInclude Include="Resource.h" />
@@ -120,10 +122,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DlgSLICParamsSet.cpp" />
+    <ClCompile Include="ImageScaleViewer.cpp" />
     <ClCompile Include="ImagesStock.cpp" />
     <ClCompile Include="Image_Processing.cpp" />
     <ClCompile Include="Image_ProcessingDoc.cpp" />
     <ClCompile Include="Image_ProcessingView.cpp" />
+    <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyImage_.cpp" />
     <ClCompile Include="SLIC.cpp" />
