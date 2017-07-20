@@ -19,7 +19,7 @@
 
 #pragma region 算法类头文件
 #include "SaliencyDetection.h"
-
+#include "SLIC.h"
 #pragma endregion
 
 
@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_EDIT_REDO, &CImage_ProcessingView::OnEditRedo)
 	ON_COMMAND(ID_FILTER_AVG, &CImage_ProcessingView::OnFilterAvg)
 	ON_COMMAND(ID_SALIENCY_LC, &CImage_ProcessingView::OnSaliencyLc)
+	ON_COMMAND(ID_SEGMENT_SLIC, &CImage_ProcessingView::OnSegmentSlic)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -436,15 +437,56 @@ void CImage_ProcessingView::OnSaliencyLc()
 
 	SalientRegionDetectionBasedonLC(m_Image.data(), SaliencyMap, w, h, 1);
 
-	for (int i=0;i!=h;++i)
+	for (int i = 0; i != h; ++i)
 	{
-		for (int j=0;j!=w;++j)
+		for (int j = 0; j != w; ++j)
 		{
 			m_Image.at(i, j, 0) = SaliencyMap[i*w + j];
 			m_Image.at(i, j, 1) = SaliencyMap[i*w + j];
 			m_Image.at(i, j, 2) = SaliencyMap[i*w + j];
 		}
 	}
+	UpdateState(true);
+
+}
+
+
+void CImage_ProcessingView::OnSegmentSlic()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
+	UINT* imgBuff = new UINT[w * h * 3]();
+	//需要传入一个uint的类型，先将图像类型进行转换
+	for (int i = 0; i != h; ++i)
+		for (int j = 0; j != w; ++j)
+			for (int k = 0; k != 3; ++k)
+				imgBuff[i * w * 3 + j * 3 + k] = static_cast<UINT>(m_Image.at(i, j, k));
+
+	SLIC slic;
+	int *kLables = new int[w*h]();
+	int numLabels(0), weight = 0 /*暂时没用*/, color = 222;
+	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, 500, weight);
+	
+	UINT* SegmentResult = new UINT[w*h];
+	slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);
+
+	for (int i = 0; i != h; ++i)
+	{
+		for (int j = 0; j != w; ++j)
+		{
+			if (SegmentResult[i*w + j] == color) 
+			{
+				m_Image.at(i, j, 0) = m_Image.at(i, j, 1) = 0;
+				m_Image.at(i, j, 2) = 255;
+			}
+		}
+	}
+	delete[] imgBuff;
+	delete[] SegmentResult;
+	delete[] kLables;
 	UpdateState(true);
 
 }
