@@ -42,14 +42,18 @@ protected:
 
 // 生成的消息映射函数
 protected:
+#pragma region 一些系统消息函数
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+#pragma endregion
+
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnFileOpen();
-	afx_msg void OnFileSaveAs();
-	afx_msg void OnShowred();
+
 private:
 	// save the original file's name
 	CString m_strFileNameSave;
@@ -58,15 +62,9 @@ private:
 	CImagesStock m_imgStock; //图像历史信息存储，用于撤销恢复  
 	ImageScaleViewer m_imgScaleViewer; //控制图像显示及缩放
 #pragma endregion
-
 	int m_nWidth;
 	int m_nHeight;
-public:
-	afx_msg void OnReverse();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnTogray();
-	afx_msg void OnRetrieve();
-	afx_msg void OnTest();
+
 
 public:
 #pragma region 状态更新函数
@@ -74,12 +72,28 @@ public:
 	void ChangeScrollSize();
 	void UpdateStatusBar(CDC *pDC);
 #pragma endregion
+#pragma region 工具类菜单响应函数
 	afx_msg void OnEditUndo();
 	afx_msg void OnEditRedo();
+	afx_msg void OnFileOpen();
+	afx_msg void OnFileSaveAs();
+#pragma endregion
+
+
+
+#pragma region 自己实现图像处理相应函数
 	afx_msg void OnFilterAvg();
 	afx_msg void OnSaliencyLc();
 	afx_msg void OnSegmentSlic();
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+
+	afx_msg void OnShowred();
+	afx_msg void OnReverse();
+
+	afx_msg void OnTogray();
+	afx_msg void OnRetrieve();
+	afx_msg void OnTest();
+#pragma endregion
+
 
 
 };

@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_SALIENCY_LC, &CImage_ProcessingView::OnSaliencyLc)
 	ON_COMMAND(ID_SEGMENT_SLIC, &CImage_ProcessingView::OnSegmentSlic)
 	ON_WM_MOUSEWHEEL()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -365,11 +366,11 @@ void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	//MyImage_ img1;
-	//m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
-	//img1.CopyTo(m_Image);
+	MyImage_ img1;
+	m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
+	img1.CopyTo(m_Image);
 
-	m_Image.Create(100, 100, RGB(255, 0, 128));
+	//m_Image.Create(100, 100, RGB(255, 0, 128));
 
 	UpdateState(true);
 }
@@ -582,17 +583,61 @@ void CImage_ProcessingView::ChangeScrollSize()
 
 void CImage_ProcessingView::UpdateStatusBar(CDC *pDC)
 {
-	CString strImgSize;
-	strImgSize.Format(_T("长:%d,宽:%d"), m_Image.GetHeight(), m_Image.GetWidth());
-
-	CClientDC dc(this);
-	CSize sz = dc.GetTextExtent(strImgSize);
-
 	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
 	CMFCStatusBar *pStatusBar = (CMFCStatusBar *)(pFrame->GetStatusBar());
+	CClientDC dc(this);
 
+	//显示图片长宽
+	CString strImgSize;
+	strImgSize.Format(_T("长:%d,宽:%d"), m_Image.GetHeight(), m_Image.GetWidth());
+	CSize sz = dc.GetTextExtent(strImgSize);
 	int index = pStatusBar->CommandToIndex(ID_INDICATOR_IMGSIZE);
 	pStatusBar->SetPaneInfo(index, ID_INDICATOR_IMGSIZE, SBPS_NORMAL, sz.cx);
 	pStatusBar->SetPaneText(index, strImgSize);
+
+	//显示缩放系数
+	CString strScaleFactor;
+	strScaleFactor.Format(_T("缩放:%3.0f%%"), m_imgScaleViewer.GetScale()*100.0);
+	sz = dc.GetTextExtent(strScaleFactor);
+	index = pStatusBar->CommandToIndex(ID_INDICATOR_DISPALYSCALE);
+	pStatusBar->SetPaneInfo(index, ID_INDICATOR_DISPALYSCALE, SBPS_NORMAL, sz.cx);
+	pStatusBar->SetPaneText(index, strScaleFactor);
+
 	ReleaseDC(pDC);
+}
+
+
+void CImage_ProcessingView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+#pragma region 状态栏信息更新
+	//实时显示鼠标坐标值
+	CString strMousePos, strMouseRGB, strMouseHSI;
+	strMousePos.Format(_T("x:%d,y:%d"), point.x, point.y);
+	CClientDC dc(this);
+	CSize sz = dc.GetTextExtent(strMousePos);
+	//std::cout << sz.cx << std::endl;
+	//CMainFrame *pFrame=(CMainFrame *)AfxGetApp()->m_pMainWnd;  
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	CMFCStatusBar *pStatusBar = (CMFCStatusBar *)(pFrame->GetStatusBar());
+
+	int index = pStatusBar->CommandToIndex(ID_INDICATOR_MOUSE_POS);
+	pStatusBar->SetPaneInfo(index, ID_INDICATOR_MOUSE_POS, SBPS_NORMAL, sz.cx);
+	pStatusBar->SetPaneText(index, strMousePos);
+
+	//实时显示RGB值
+	COLORREF color = dc.GetPixel(point.x, point.y);
+	int nCb = (color & 0x00ff0000) >> 16;
+	int nCg = (color & 0x0000ff00) >> 8;
+	int nCr = color & 0x000000ff;
+	strMouseRGB.Format(_T("R:%d,G:%d,B:%d"), nCr, nCg, nCb);
+	sz = dc.GetTextExtent(strMouseRGB);
+	index = pStatusBar->CommandToIndex(ID_INDICATOR_RGB);
+	pStatusBar->SetPaneInfo(index, ID_INDICATOR_RGB, SBPS_NORMAL, sz.cx);
+	pStatusBar->SetPaneText(index, strMouseRGB);
+#pragma endregion
+
+
+	CScrollView::OnMouseMove(nFlags, point);
 }

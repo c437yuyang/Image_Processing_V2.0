@@ -31,6 +31,9 @@ static UINT indicators[] =
 {
 	ID_SEPARATOR,           // 状态行指示器
 	ID_INDICATOR_IMGSIZE,		//显示图片分辨率
+	ID_INDICATOR_MOUSE_POS,
+	ID_INDICATOR_RGB,
+	ID_INDICATOR_DISPALYSCALE,
 };
 
 // CMainFrame 构造/析构
