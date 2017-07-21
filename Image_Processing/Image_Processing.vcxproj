@@ -96,7 +96,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\..\CUR_鼠标样式\32_1.cur" />
+    <None Include="..\..\CUR_鼠标样式\32_3.cur" />
     <None Include="ReadMe.txt" />
+    <None Include="res\cursor1.cur" />
     <None Include="res\Image_Processing.ico" />
     <None Include="res\Image_Processing.rc2" />
     <None Include="res\Image_ProcessingDoc.ico" />

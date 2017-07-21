@@ -43,6 +43,15 @@
     <None Include="res\Toolbar256.bmp">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\cursor1.cur">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\..\CUR_鼠标样式\32_1.cur">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\..\CUR_鼠标样式\32_3.cur">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image_Processing.h">
