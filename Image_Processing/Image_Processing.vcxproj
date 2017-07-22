@@ -108,6 +108,7 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CvtColor.h" />
     <ClInclude Include="DlgSLICParamsSet.h" />
     <ClInclude Include="ImageScaleViewer.h" />
     <ClInclude Include="ImagesStock.h" />
@@ -124,6 +125,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CvtColor.cpp" />
     <ClCompile Include="DlgSLICParamsSet.cpp" />
     <ClCompile Include="ImageScaleViewer.cpp" />
     <ClCompile Include="ImagesStock.cpp" />

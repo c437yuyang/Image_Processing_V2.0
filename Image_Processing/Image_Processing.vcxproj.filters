@@ -96,6 +96,9 @@
     <ClInclude Include="Interpolation.h">
       <Filter>Algorithms</Filter>
     </ClInclude>
+    <ClInclude Include="CvtColor.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="Interpolation.cpp">
       <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="CvtColor.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
