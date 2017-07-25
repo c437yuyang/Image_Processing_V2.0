@@ -41,6 +41,15 @@ MyImage_::MyImage_(const MyImage_ &img1)
 	img1.CopyTo(*this);
 }
 
+MyImage_::MyImage_(BYTE * src, int w, int h) //从uchar数组初始化一个图像
+{
+	m_pBits = src;
+	SetWidth(w);
+	SetHeight(h);
+	SetGrayed(false);
+	src = NULL;
+}
+
 bool MyImage_::IsGrayed() const
 {
 	return m_bIsGrayed;

@@ -17,6 +17,7 @@ public:
 	MyImage_(int w, int h); ////产生黑色
 	MyImage_(int w, int h, COLORREF color); //产生单色
 	MyImage_(const MyImage_ &srcImg); //拷贝构造函数
+	MyImage_(BYTE* src, int w, int h);
 	MyImage_& MyImage_::operator=(const MyImage_ &img);//拷贝赋值运算符
 	bool operator==(const MyImage_ &rhs);
 	~MyImage_(void);

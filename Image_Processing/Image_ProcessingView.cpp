@@ -190,7 +190,7 @@ void CImage_ProcessingView::OnFileOpen()
 	{
 		if (!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
 
-		m_strFileNameSave = dlg.GetPathName();
+		m_strFileNameSave = dlg.GetPathName(); //pathname才是全路径
 		if (m_Image.Load(m_strFileNameSave) == MyImage_::LOAD_FAIL)
 		{
 			AfxMessageBox(_T("打开图片出错!"));
@@ -199,6 +199,8 @@ void CImage_ProcessingView::OnFileOpen()
 		//获得图片的地址，并且加载图片
 		//这里只是加载到数组里，后面的Invalidate(1)再来调用Ondraw函数再来调用MyImage_的Draw方法来画出图片
 		//获得图片的大小，并按其大小设置滚动条的初始窗口大小等参数
+		//还要重新设置缩放比例为100%
+		m_imgScaleViewer.SetScale(1.0);
 		UpdateState(true);
 	}
 }
@@ -490,6 +492,9 @@ void CImage_ProcessingView::OnSegmentSlic()
 	int *kLables = new int[w*h]();
 	int numLabels(0), weight = 0 /*暂时没用*/, color = 222;
 	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, nSpNum, weight);
+
+	CString str; str.Format(_T("共有超像素%d个"), numLabels);
+	AfxMessageBox(str);
 
 	UINT* SegmentResult = new UINT[w*h];
 	slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);

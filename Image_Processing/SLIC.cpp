@@ -646,7 +646,8 @@ void SLIC::PerformSuperpixelSegmentation_VariableSandM(
 
 					//------------------------------------------------------------------------
 					double dist = distlab[idx] / maxlab[n] + distxy[idx] * invxywt;//only varying m, prettier superpixels
-					//double dist = distlab[i]/maxlab[n] + distxy[i]/maxxy[n];//varying both m and S
+					//TODO:更改这里决定使用哪种SLIC方式，S是否固定，S固定，形状更加规则，S不固定产生更加符合边界的
+					//double dist = distlab[idx]/maxlab[n] + distxy[idx]/maxxy[n];//varying both m and S
 					//------------------------------------------------------------------------
 
 					if (dist < distvec[idx]) //计算完距离后，找到距离最小值，并记录所属的类别，其实就是类似k_means
