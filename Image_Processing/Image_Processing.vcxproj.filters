@@ -52,6 +52,9 @@
     <None Include="..\..\CUR_鼠标样式\32_3.cur">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\CURSOR_MOUSEGRAB.cur">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image_Processing.h">
@@ -99,6 +102,12 @@
     <ClInclude Include="CvtColor.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="AddNoise.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -136,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="CvtColor.cpp">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="AddNoise.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

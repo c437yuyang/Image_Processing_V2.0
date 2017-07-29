@@ -100,6 +100,7 @@
     <None Include="..\..\CUR_鼠标样式\32_3.cur" />
     <None Include="ReadMe.txt" />
     <None Include="res\cursor1.cur" />
+    <None Include="res\CURSOR_MOUSEGRAB.cur" />
     <None Include="res\Image_Processing.ico" />
     <None Include="res\Image_Processing.rc2" />
     <None Include="res\Image_ProcessingDoc.ico" />
@@ -108,6 +109,8 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddNoise.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="CvtColor.h" />
     <ClInclude Include="DlgSLICParamsSet.h" />
     <ClInclude Include="ImageScaleViewer.h" />
@@ -125,6 +128,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddNoise.cpp" />
     <ClCompile Include="CvtColor.cpp" />
     <ClCompile Include="DlgSLICParamsSet.cpp" />
     <ClCompile Include="ImageScaleViewer.cpp" />

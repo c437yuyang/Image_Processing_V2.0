@@ -24,6 +24,7 @@
 #pragma region 算法类头文件
 #include "SaliencyDetection.h"
 #include "SLIC.h"
+#include "AddNoise.h"
 #pragma endregion
 
 #pragma region 参数设置类窗口头文件
@@ -59,6 +60,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_SEGMENT_SLIC, &CImage_ProcessingView::OnSegmentSlic)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_MOUSEMOVE()
+	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -608,7 +610,6 @@ void CImage_ProcessingView::UpdateStatusBar(CDC *pDC)
 	ReleaseDC(pDC);
 }
 
-
 void CImage_ProcessingView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -639,7 +640,20 @@ void CImage_ProcessingView::OnMouseMove(UINT nFlags, CPoint point)
 	pStatusBar->SetPaneInfo(index, ID_INDICATOR_RGB, SBPS_NORMAL, sz.cx);
 	pStatusBar->SetPaneText(index, strMouseRGB);
 #pragma endregion
-
-
 	CScrollView::OnMouseMove(nFlags, point);
+}
+
+
+void CImage_ProcessingView::OnAddnoise()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+	//AddNoise::Rayleigh(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), -10, 300);
+	//AddNoise::Gaussian(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 0,10);
+	//AddNoise::Salt(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 2000);
+	//AddNoise::Exponential(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 20);
+	//AddNoise::Gamma(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 10,1);
+
+	UpdateState(true);
+
 }

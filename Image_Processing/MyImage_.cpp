@@ -4,7 +4,7 @@
 
 CImage MyImage_::s_CImage; //定义静态变量
 
-//负责创建一个Cimage用于显示或者加载
+//负责创建一个CImage用于显示或者加载
 void MyImage_::CreateCImage() const
 {
 	if (!s_CImage.IsNull()) s_CImage.Destroy();
