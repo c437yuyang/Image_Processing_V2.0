@@ -111,6 +111,12 @@
     <ClInclude Include="DlgNosieParamsSet.h">
       <Filter>DlgSetParams</Filter>
     </ClInclude>
+    <ClInclude Include="Fourier.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgShowImg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -154,6 +160,12 @@
     </ClCompile>
     <ClCompile Include="DlgNosieParamsSet.cpp">
       <Filter>DlgSetParams</Filter>
+    </ClCompile>
+    <ClCompile Include="Fourier.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgShowImg.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

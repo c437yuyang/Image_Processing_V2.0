@@ -21,16 +21,7 @@
 #pragma endregion
 
 
-#pragma region 算法类头文件
-#include "SaliencyDetection.h"
-#include "SLIC.h"
-#include "AddNoise.h"
-#pragma endregion
 
-#pragma region 参数设置类窗口头文件
-#include "DlgSLICParamsSet.h"
-#include "DlgNosieParamsSet.h"
-#pragma endregion
 
 
 
@@ -62,6 +53,8 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_MOUSEMOVE()
 	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
+	ON_COMMAND(ID_FREQ_FFT, &CImage_ProcessingView::OnFreqFft)
+	ON_COMMAND(ID_CLOSE_CHILDS, &CImage_ProcessingView::OnCloseChilds)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -313,24 +306,21 @@ void CImage_ProcessingView::OnTogray()
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
 
-	int avg = 0;
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
-			/*-------------------------Your Code Here--------------------------*/
-			//把图像灰度化
-			avg = 0;
-			avg += static_cast<int>(m_Image.at(j, k, 0));
-			avg += static_cast<int>(m_Image.at(j, k, 1));
-			avg += static_cast<int>(m_Image.at(j, k, 2));
-			avg /= 3;
-			m_Image.at(j, k, 0) = static_cast<BYTE>(avg);
-			m_Image.at(j, k, 1) = static_cast<BYTE>(avg);
-			m_Image.at(j, k, 2) = static_cast<BYTE>(avg);
-			/*-------------------------Your Code Here--------------------------*/
-		}
-	}
+	//for (int i = 0; i != h;++i)
+	//{
+	//	for (int j = 0; j != w; ++j)
+	//	{
+	//		/*-------------------------Your Code Here--------------------------*/
+	//		//把图像灰度化
+	//		BYTE val = static_cast<BYTE>((m_Image.at(i, j, 0) + m_Image.at(i, j, 1) + m_Image.at(i, j, 2)) / 3.0);
+	//		for (int k = 0; k != 3; ++k)
+	//			m_Image.at(i, j, k) = val;
+	//		/*-------------------------Your Code Here--------------------------*/
+	//	}
+	//}
+
+	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+
 	UpdateState(true);
 }
 
@@ -371,11 +361,29 @@ void CImage_ProcessingView::OnTest()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	MyImage_ img1;
-	m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
-	img1.CopyTo(m_Image);
+
+	//MyImage_ img1;
+	//m_Image.BorderFillTo(img1, 2, MyImage_::FILL_BLACK);
+	//img1.CopyTo(m_Image);
 
 	//m_Image.Create(100, 100, RGB(255, 0, 128));
+
+
+
+	if (m_Image.IsNull()) return;
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
+	if (!m_Image.IsGrayed())
+	{
+
+		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		UpdateState(true);
+	}
+
+	MyImage_ FT(Fourier::calExLen(w), Fourier::calExLen(h));
+	Fourier::FFT2(m_Image.data(), w, h, FT.data());
+
 
 	UpdateState(true);
 }
@@ -455,7 +463,7 @@ void CImage_ProcessingView::OnSaliencyLc()
 	int h = m_Image.GetHeight();
 	BYTE* SaliencyMap = new BYTE[w * h]();
 
-	SalientRegionDetectionBasedonLC(m_Image.data(), SaliencyMap, w, h, 1);
+	Salient::SalientRegionDetectionBasedonLC(m_Image.data(), SaliencyMap, w, h, 1);
 
 	for (int i = 0; i != h; ++i)
 	{
@@ -650,33 +658,75 @@ void CImage_ProcessingView::OnAddnoise()
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;
 
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
 	CDlgNosieParamsSet dlg;
 	if (dlg.DoModal() == IDCANCEL) return;
 
 	int nNosieType = dlg.m_nNosieType;
-	double dNoiseParam1 = dlg.m_dNoiseParam1;
-	double dNoiseParam2 = dlg.m_dNoiseParam2;
+	double para1 = dlg.m_dNoiseParam1;
+	double para2 = dlg.m_dNoiseParam2;
 	switch (nNosieType)
 	{
 	case CDlgNosieParamsSet::Salt:
-		AddNoise::Salt(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), static_cast<int>(dNoiseParam1*m_Image.GetWidth()*m_Image.GetHeight())); break;
+		AddNoise::Salt(m_Image.data(), w, h, static_cast<int>(para1*w*h)); break;
 	case CDlgNosieParamsSet::Pepper:
-		AddNoise::Pepper(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), static_cast<int>(dNoiseParam1*m_Image.GetWidth()*m_Image.GetHeight())); break;
+		AddNoise::Pepper(m_Image.data(), w, h, static_cast<int>(para1*w*h)); break;
 	case CDlgNosieParamsSet::Gaussian:
-		AddNoise::Gaussian(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+		AddNoise::Gaussian(m_Image.data(), w, h, para1, para2); break;
 	case CDlgNosieParamsSet::Rayleigh:
-		AddNoise::Rayleigh(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+		AddNoise::Rayleigh(m_Image.data(), w, h, para1, para2); break;
 	case CDlgNosieParamsSet::Exponential:
-		AddNoise::Exponential(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1); break;
+		AddNoise::Exponential(m_Image.data(), w, h, para1); break;
 	case CDlgNosieParamsSet::Uniform:
-		AddNoise::Uniform(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+		AddNoise::Uniform(m_Image.data(), w, h, para1, para2); break;
 	case CDlgNosieParamsSet::Gamma:
-		AddNoise::Gamma(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+		AddNoise::Gamma(m_Image.data(), w, h, para1, para2); break;
 	default:
 		break;
 	}
 
-
 	UpdateState(true);
 
+}
+
+
+void CImage_ProcessingView::OnFreqFft()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
+	if (!m_Image.IsGrayed()) 
+	{
+	
+		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		UpdateState(true);
+	}
+
+	MyImage_ FT(Fourier::calExLen(w),Fourier::calExLen(h));
+	Fourier::FFT2(m_Image.data(), w, h, FT.data());
+	ShowImgInDlg(_T("傅里叶频谱"), FT);
+	
+}
+
+void CImage_ProcessingView::ShowImgInDlg(CString strWindowName, const MyImage_ &srcImg)
+{
+	CDlgShowImg *pDlg = new CDlgShowImg(strWindowName, srcImg);
+	pDlg->Create(IDD_DLG_SHOW_IMG, this);
+	pDlg->SetWindowTextW(strWindowName);
+	pDlg->ShowWindow(SW_SHOW);
+	m_dlgs.push_back(pDlg);
+}
+
+void CImage_ProcessingView::OnCloseChilds()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_dlgs.empty())
+	{
+		for_each(m_dlgs.begin(), m_dlgs.end(), [](CDlgShowImg *p) {p->DestroyWindow(); });
+		m_dlgs.clear();
+	}
 }
