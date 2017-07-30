@@ -108,6 +108,9 @@
     <ClInclude Include="Common.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="DlgNosieParamsSet.h">
+      <Filter>DlgSetParams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="AddNoise.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgNosieParamsSet.cpp">
+      <Filter>DlgSetParams</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

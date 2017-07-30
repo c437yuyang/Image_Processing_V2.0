@@ -29,6 +29,7 @@
 
 #pragma region 参数设置类窗口头文件
 #include "DlgSLICParamsSet.h"
+#include "DlgNosieParamsSet.h"
 #pragma endregion
 
 
@@ -648,11 +649,33 @@ void CImage_ProcessingView::OnAddnoise()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;
-	//AddNoise::Rayleigh(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), -10, 300);
-	//AddNoise::Gaussian(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 0,10);
-	//AddNoise::Salt(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 2000);
-	//AddNoise::Exponential(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 20);
-	//AddNoise::Gamma(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), 10,1);
+
+	CDlgNosieParamsSet dlg;
+	if (dlg.DoModal() == IDCANCEL) return;
+
+	int nNosieType = dlg.m_nNosieType;
+	double dNoiseParam1 = dlg.m_dNoiseParam1;
+	double dNoiseParam2 = dlg.m_dNoiseParam2;
+	switch (nNosieType)
+	{
+	case CDlgNosieParamsSet::Salt:
+		AddNoise::Salt(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), static_cast<int>(dNoiseParam1*m_Image.GetWidth()*m_Image.GetHeight())); break;
+	case CDlgNosieParamsSet::Pepper:
+		AddNoise::Pepper(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), static_cast<int>(dNoiseParam1*m_Image.GetWidth()*m_Image.GetHeight())); break;
+	case CDlgNosieParamsSet::Gaussian:
+		AddNoise::Gaussian(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+	case CDlgNosieParamsSet::Rayleigh:
+		AddNoise::Rayleigh(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+	case CDlgNosieParamsSet::Exponential:
+		AddNoise::Exponential(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1); break;
+	case CDlgNosieParamsSet::Uniform:
+		AddNoise::Uniform(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+	case CDlgNosieParamsSet::Gamma:
+		AddNoise::Gamma(m_Image.data(), m_Image.GetWidth(), m_Image.GetHeight(), dNoiseParam1, dNoiseParam2); break;
+	default:
+		break;
+	}
+
 
 	UpdateState(true);
 

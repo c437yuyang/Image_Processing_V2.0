@@ -112,6 +112,7 @@
     <ClInclude Include="AddNoise.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CvtColor.h" />
+    <ClInclude Include="DlgNosieParamsSet.h" />
     <ClInclude Include="DlgSLICParamsSet.h" />
     <ClInclude Include="ImageScaleViewer.h" />
     <ClInclude Include="ImagesStock.h" />
@@ -130,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="AddNoise.cpp" />
     <ClCompile Include="CvtColor.cpp" />
+    <ClCompile Include="DlgNosieParamsSet.cpp" />
     <ClCompile Include="DlgSLICParamsSet.cpp" />
     <ClCompile Include="ImageScaleViewer.cpp" />
     <ClCompile Include="ImagesStock.cpp" />

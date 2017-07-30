@@ -1,7 +1,6 @@
 #pragma once
 class Common {
 public:
-
 	template<class T> 
 	static T saturate_cast(T value, T min = 0.0, T max = 255.0)
 	{
@@ -9,5 +8,4 @@ public:
 		if (value < min) return min;
 		return value;
 	}
-
 };

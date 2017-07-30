@@ -72,6 +72,7 @@ void AddNoise::Exponential(unsigned char * src, int width, int height, double a)
 		{
 			for (int k = 0; k != 3; ++k)
 			{
+
 				double exval = -1 / a*log(1 - dis(e)) * 255;
 				src[i*width * 3 + j * 3 + k] = static_cast<unsigned char>
 					(Common::saturate_cast<double>(src[i*width * 3 + j * 3 + k] + exval, 0.0, 255.0));
@@ -90,7 +91,9 @@ void AddNoise::Uniform(unsigned char * src, int width, int height, double a, dou
 		{
 			for (int k = 0; k != 3; ++k)
 			{
-				double ufval = -1 / a*log(1 - dis(e)) * 255;
+
+
+				double ufval = a + (b - a)*dis(e);
 				src[i*width * 3 + j * 3 + k] = static_cast<unsigned char>
 					(Common::saturate_cast<double>(src[i*width * 3 + j * 3 + k] + ufval, 0.0, 255.0));
 			}
