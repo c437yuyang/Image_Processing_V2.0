@@ -7,7 +7,11 @@ using std::complex;
 
 class Fourier //提供傅里叶变换及其相关处理
 {
-
+public:
+	enum Filter_Type
+	{
+		ILPF, BLPF, GLPF, IHPF, BHPF, GHPF
+	};
 private:
 	//1维fft
 	static void FFT(const complex<double> * TD, complex<double> * FD, const int index);
@@ -28,6 +32,15 @@ public:
 	//2维图像的ifft
 	static void IFFT2(const complex<double>* pFD, const int w, const int h, unsigned char *dst);
 
-	static void test(const unsigned char * src, int w,int h, unsigned char * dst);
+
+	//滤波函数
+	static void Filter(const unsigned char* src, const int w, const int h, const double *pFilter, unsigned char * dst);
+
+	//滤波器模板生成函数，K1是高通滤波中的原图权重，K2是高频权重
+	static void GetFilter(double * pFilter, const int w_extend, const int h_extend,
+		const Filter_Type type, const int radius, const int order, const double K1 = 1.0, const double K2 = 0.5);
+
+
+	static void test(const unsigned char * src,const int w,const int h, unsigned char * dst);
 
 };

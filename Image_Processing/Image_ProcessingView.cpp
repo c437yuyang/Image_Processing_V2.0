@@ -55,6 +55,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
 	ON_COMMAND(ID_FREQ_FFT, &CImage_ProcessingView::OnFreqFft)
 	ON_COMMAND(ID_CLOSE_CHILDS, &CImage_ProcessingView::OnCloseChilds)
+	ON_COMMAND(ID_FREQ_FILTER, &CImage_ProcessingView::OnFreqFilter)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -729,4 +730,42 @@ void CImage_ProcessingView::OnCloseChilds()
 		for_each(m_dlgs.begin(), m_dlgs.end(), [](CDlgShowImg *p) {p->DestroyWindow(); });
 		m_dlgs.clear();
 	}
+}
+
+
+void CImage_ProcessingView::OnFreqFilter()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+
+
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+	int w_extend = Fourier::calExLen(w);
+	int h_extend = Fourier::calExLen(h);
+
+
+
+	DlgFreqFilterSet dlg;
+	if (dlg.DoModal() == IDCANCEL) return;
+
+	if (!m_Image.IsGrayed())
+	{
+		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		UpdateState(true);
+	}
+
+	double *pFilter = new double[w_extend*h_extend]();
+	int radius = dlg.m_nRadius;
+	int order = dlg.m_nBpfOrder;
+	double K1 = dlg.m_dOriginWeight;
+	double K2 = dlg.m_dEnforceWeight;
+	Fourier::Filter_Type type = static_cast<Fourier::Filter_Type>(dlg.m_nFilterType);
+	
+	Fourier::GetFilter(pFilter, w_extend, h_extend, type, radius, order,K1, K2);
+	MyImage_ dst(w,h);
+	Fourier::Filter(m_Image.data(), w, h, pFilter, dst.data());
+	dst.CopyTo(m_Image);
+	UpdateState(true);
+	delete[] pFilter;
 }

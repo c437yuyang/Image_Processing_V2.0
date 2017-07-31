@@ -172,8 +172,8 @@ void Fourier::FFT2(const unsigned char * src, const int w, const int h, complex<
 //将图像数据进行二维IFFT变换到pTD里
 void Fourier::IFFT2(const complex<double>* pFD, const int w_extend, const int h_extend, complex<double>* pTD)
 {
-	int h_index = log2(h_extend);
-	int w_index = log2(w_extend);
+	int h_index = static_cast<int>(log2(h_extend));
+	int w_index = static_cast<int>(log2(w_extend));
 	//开始逆向变换
 	complex<double>* pTD1 = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();//分配内存空间
 	complex<double>* temp = pTD;
@@ -290,9 +290,76 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 
 }
 
+//执行频域滤波的函数，需要给定滤波器
+void Fourier::Filter(const unsigned char * src, const int w, const int h, const double * pFilter, unsigned char * dst)
+{
+
+	int h_extend = calExLen(h);//图像进行扩展,寻找2的幂次方
+	int w_extend = calExLen(w);
+	complex<double>* pFD = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();
+
+	//正变换
+	FFT2(src, w, h, pFD);
+	for (UINT i = 0; i < h_extend; ++i)//把所有频域数据拷贝到pTD1并应用模板
+	{
+		for (UINT j = 0; j < w_extend; ++j)
+		{
+			pFD[i*w_extend + j] *= pFilter[i*w_extend + j];
+		}
+	}
+
+	//逆变换
+	IFFT2(pFD, w_extend, h_extend, dst);
+	delete[] pFD;
+}
+
+void Fourier::GetFilter(double * pFilter, const int w_extend, const int h_extend, 
+	const Filter_Type type, const int radius, const int order, const double K1, const double K2)
+{
+	int xCenter = w_extend / 2;
+	int yCenter = h_extend / 2;
+	for (int i = 0; i < h_extend; ++i)//对滤波器模板赋值
+	{
+		for (int j = 0; j < w_extend; ++j)
+		{
+			double dist = sqrt(pow((double)i - yCenter, 2) + pow((double)j - xCenter, 2));
+			switch (type)
+			{
+			case IHPF://理想高通滤波
+				if (dist >= radius)
+					pFilter[i*w_extend + j] = K1 + K2 * 1;
+				else
+					pFilter[i*w_extend + j] = K1;
+				break;
+			case BHPF: //巴特沃斯高通滤波
+				pFilter[i*w_extend + j] = K1 + K2 * (1.0 / (1.0 + pow((radius / dist), 2 * order)));
+				break;
+			case GHPF://高斯高通滤波
+				pFilter[i*w_extend + j] = K1 + K2 * (1 - exp(-0.5*pow((dist / radius), 2)));
+				break;
+			case ILPF://理想低通滤波
+				if (dist >= radius)
+					pFilter[i*w_extend + j] = 0;
+				else
+					pFilter[i*w_extend + j] = 1;
+				break;
+			case BLPF: //巴特沃斯低通滤波
+				pFilter[i*w_extend + j] = 1.0 / (1.0 + pow((dist / radius), 2 * order));
+				break;
+			case GLPF://高斯低通滤波
+				pFilter[i*w_extend + j] = exp(-0.5*pow((dist / radius), 2));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+
+}
 
 //写一个测试方法测试逆变换对不对
-void Fourier::test(const unsigned char * src,int w,int h, unsigned char * dst)
+void Fourier::test(const unsigned char * src, const int w, const int h, unsigned char * dst)
 {
 
 	int h_extend = calExLen(h);//图像进行扩展,寻找2的幂次方

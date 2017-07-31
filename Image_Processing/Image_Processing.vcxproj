@@ -112,6 +112,7 @@
     <ClInclude Include="AddNoise.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CvtColor.h" />
+    <ClInclude Include="DlgFreqFilterSet.h" />
     <ClInclude Include="DlgNosieParamsSet.h" />
     <ClInclude Include="DlgShowImg.h" />
     <ClInclude Include="DlgSLICParamsSet.h" />
@@ -133,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="AddNoise.cpp" />
     <ClCompile Include="CvtColor.cpp" />
+    <ClCompile Include="DlgFreqFilterSet.cpp" />
     <ClCompile Include="DlgNosieParamsSet.cpp" />
     <ClCompile Include="DlgShowImg.cpp" />
     <ClCompile Include="DlgSLICParamsSet.cpp" />

@@ -21,6 +21,7 @@
 #pragma region 参数设置类窗口头文件
 #include "DlgSLICParamsSet.h"
 #include "DlgNosieParamsSet.h"
+#include "DlgFreqFilterSet.h"
 
 #pragma endregion
 
@@ -118,6 +119,7 @@ private:
 #pragma endregion
 public:
 	afx_msg void OnCloseChilds();
+	afx_msg void OnFreqFilter();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

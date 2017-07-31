@@ -117,6 +117,9 @@
     <ClInclude Include="DlgShowImg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgFreqFilterSet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -165,6 +168,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgShowImg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgFreqFilterSet.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
