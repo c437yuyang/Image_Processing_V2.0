@@ -382,8 +382,8 @@ void CImage_ProcessingView::OnTest()
 	}
 
 	MyImage_ FT(Fourier::calExLen(w), Fourier::calExLen(h));
-	Fourier::FFT2(m_Image.data(), w, h, FT.data());
-
+	Fourier::test(m_Image.data(), w, h, FT.data());
+	FT.CopyTo(m_Image);
 
 	UpdateState(true);
 }

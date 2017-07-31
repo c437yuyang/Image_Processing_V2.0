@@ -28,6 +28,6 @@ public:
 	//2Î¬Í¼ÏñµÄifft
 	static void IFFT2(const complex<double>* pFD, const int w, const int h, unsigned char *dst);
 
-	static void test(const unsigned char * src, unsigned char * dst);
+	static void test(const unsigned char * src, int w,int h, unsigned char * dst);
 
 };

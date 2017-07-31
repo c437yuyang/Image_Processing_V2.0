@@ -116,6 +116,7 @@ void Fourier::IFFT(const complex<double> * TD, complex<double> * FD, const int i
 	delete X2;
 }
 
+
 //将图像数据进行二维FFT变换到pFD里
 void Fourier::FFT2(const unsigned char * src, const int w, const int h, complex<double>* pFD)
 {
@@ -175,7 +176,7 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w_extend, const int h_
 	int w_index = log2(w_extend);
 	//开始逆向变换
 	complex<double>* pTD1 = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();//分配内存空间
-	complex<double>* temp = new complex<double>[sizeof(complex<double>)*w_extend*h_extend](); //其实可以用pTD充当这个临时变量，只不过代码含义有点不清晰了就
+	complex<double>* temp = pTD;
 
 	memcpy(pTD1, pFD, sizeof(complex<double>)*w_extend*h_extend); //先拷贝到临时内存里
 
@@ -218,7 +219,6 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w_extend, const int h_
 
 	//到此pTD1存的就全部都是时域数据
 	delete[]pTD1; //一定要去掉，不然多占几十兆内存
-	delete[]temp;
 }
 
 
@@ -274,6 +274,7 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 	//先进行二维逆FFT到pTD里面
 	IFFT2(pFD, w_extend, h_extend, pTD);
 
+	//取实部恢复到dst里面
 	for (int i = 0; i < h_extend; ++i) //显示反变换得到的图像
 	{
 		for (int j = 0; j < w_extend; ++j)
@@ -285,7 +286,7 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 			}
 		}
 	}
-
+	delete[] pTD;
 
 }
 
@@ -294,7 +295,14 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 void Fourier::test(const unsigned char * src,int w,int h, unsigned char * dst)
 {
 
+	int h_extend = calExLen(h);//图像进行扩展,寻找2的幂次方
+	int w_extend = calExLen(w);
+	complex<double>* pFD = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();
 
+	FFT2(src, w, h, pFD);
+
+	IFFT2(pFD, w_extend, h_extend, dst);
+	delete[] pFD;
 
 }
 
