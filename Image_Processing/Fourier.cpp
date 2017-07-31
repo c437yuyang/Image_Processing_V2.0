@@ -3,7 +3,6 @@
 
 void Fourier::FFT(const complex<double>* TD, complex<double>* FD, const int index)
 {
-
 	int dotcount = 0;//傅立叶变换点数
 	int bfsize = 0, p = 0;//中间变量
 	double angle;//角度
@@ -46,9 +45,7 @@ void Fourier::FFT(const complex<double>* TD, complex<double>* FD, const int inde
 		for (int i = 0; i < index; i++)
 		{
 			if (j&(1 << i))
-			{
 				p += 1 << (index - i - 1);//////////////p=p+1<<(index-i-1)?????
-			}
 		}
 		FD[j] = X1[p];
 	}
@@ -103,9 +100,7 @@ void Fourier::IFFT(const complex<double> * TD, complex<double> * FD, const int i
 		for (int i = 0; i < index; i++)
 		{
 			if (j&(1 << i))
-			{
 				p += 1 << (index - i - 1);//////////////p=p+1<<(index-i-1)?????
-			}
 		}
 
 		FD[j]._Val[0] = X1[p]._Val[0] / dotcount;
@@ -122,51 +117,35 @@ void Fourier::FFT2(const unsigned char * src, const int w, const int h, complex<
 {
 	int h_extend = calExLen(h);//图像进行扩展,寻找2的幂次方
 	int w_extend = calExLen(w);
-	int h_index = log2(h_extend);
-	int w_index = log2(w_extend);
+	int h_index = static_cast<int>(log2(h_extend));
+	int w_index = static_cast<int>(log2(w_extend));
 
 	complex<double>* pTD = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();
 
 	for (int i = 0; i < h; ++i)//把图像的值传给pTD
-	{
 		for (int j = 0; j < w; ++j)
-		{
 			//pTD[i*w_extend + j] = src[i*w + j] * (pow(-1.0, i + j));//把频谱搬移到中心，单通道图像 
 			pTD[i*w_extend + j] = src[i*w * 3 + j * 3] * (pow(-1.0, i + j));//把频谱搬移到中心 ，3通道图像
-		}
-	}
 
 	for (int i = 0; i < h_extend; i++) //横着也就是按行进行fft
-	{
 		FFT(&pTD[w_extend*i], &pFD[w_extend*i], w_index);//对x方向进行快速傅立叶变换,变换到pfd进行存储
-	}
 
 	for (int i = 0; i < h_extend; i++)//把pFD进行转置存回pTD,准备再按列进行FFT
-	{
 		for (int j = 0; j < w_extend; j++)
-		{
 			pTD[h_extend*j + i] = pFD[w_extend*i + j];
-		}
-	}
 
 	for (int i = 0; i < w_extend; i++)//竖着也就是按列进行fft
-	{
 		FFT(&pTD[h_extend*i], &pFD[h_extend*i], h_index);//对y方向进行快速傅立叶变换，实质是对h方向进行快速傅立叶变换
-	}
 
 	for (int i = 0; i < h_extend; i++)//对变换结果进行转置，变回原图形
-	{
 		for (int j = 0; j < w_extend; j++)
-		{
 			pTD[w_extend*i + j] = pFD[h_extend*j + i];
-		}
-	}
+	//到这一步  pTD里存的就是傅里叶变换的全部数据
 
 	memcpy(pFD, pTD, sizeof(complex<double>)*w_extend*h_extend); //拷贝到pFD
 
-	//到这一步  pTD里存的就是傅里叶变换的全部数据
+	
 	delete[] pTD; //删除掉中间数据
-
 }
 
 //将图像数据进行二维IFFT变换到pTD里
@@ -174,7 +153,7 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w_extend, const int h_
 {
 	int h_index = static_cast<int>(log2(h_extend));
 	int w_index = static_cast<int>(log2(w_extend));
-	//开始逆向变换
+
 	complex<double>* pTD1 = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();//分配内存空间
 	complex<double>* temp = pTD;
 
@@ -183,41 +162,25 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w_extend, const int h_
 	//让图像均值为0
 	/*pTD1[h_extend/2*h_extend+w_extend/2] = 0.0;*/
 	for (int i = 0; i < h_extend; i++) //横着也就是按行进行fft，变换到temp里
-	{
 		IFFT(&pTD1[w_extend*i], &temp[w_extend*i], w_index);//对x方向进行快速傅立叶变换
-	}
 
 	for (int i = 0; i < h_extend; i++)//转置
-	{
 		for (int j = 0; j < w_extend; j++)
-		{
 			pTD1[h_extend*j + i] = temp[w_extend*i + j];
-		}
-	}
 
 	for (int i = 0; i < w_extend; i++)//竖着也就是按列进行fft
-	{
 		IFFT(&pTD1[h_extend*i], &temp[h_extend*i], h_index);//对y方向进行快速傅立叶变换，实质是对h方向进行快速傅立叶变换
-	}
 
 	for (int i = 0; i < h_extend; i++)//对变换结果进行转置，变回原图形
-	{
 		for (int j = 0; j < w_extend; j++)
-		{
 			pTD1[w_extend*i + j] = temp[h_extend*j + i];
-		}
-	}
 
 	for (int i = 0; i < h_extend; i++)//对变换结果乘以之前的频域平移因子，不然会出现之前的相位出错
-	{
 		for (int j = 0; j < w_extend; j++)
-		{
-			pTD1[w_extend*i + j] = pTD1[w_extend*i + j] * (pow(-1.0, -(i + j)));
-		}
-	}
-	memcpy(pTD, pTD1, sizeof(complex<double>)*w_extend*h_extend);
-
+			pTD1[w_extend*i + j] *= (pow(-1.0, -(i + j)));
 	//到此pTD1存的就全部都是时域数据
+
+	memcpy(pTD, pTD1, sizeof(complex<double>)*w_extend*h_extend); //拷贝到目标处
 	delete[]pTD1; //一定要去掉，不然多占几十兆内存
 }
 
@@ -265,8 +228,8 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 {
 	int h_extend = calExLen(h);//图像进行扩展,寻找2的幂次方
 	int w_extend = calExLen(w);
-	int h_index = log2(h_extend);
-	int w_index = log2(w_extend);
+	int h_index = static_cast<int>(log2(h_extend));
+	int w_index = static_cast<int>(log2(w_extend));
 
 	complex<double>* pTD = new complex<double>[sizeof(complex<double>)*w_extend*h_extend]();//分配内存空间
 
@@ -281,9 +244,7 @@ void Fourier::IFFT2(const complex<double>* pFD, const int w, const int h, unsign
 		{
 			unsigned char val = static_cast<unsigned char>(Common::saturate_cast(pTD[i*w_extend + j].real(), 0.0, 255.0));
 			for (int k = 0; k != 3; ++k)
-			{
 				dst[i*w_extend * 3 + j * 3 + k] = val;
-			}
 		}
 	}
 	delete[] pTD;
@@ -300,13 +261,9 @@ void Fourier::Filter(const unsigned char * src, const int w, const int h, const 
 
 	//正变换
 	FFT2(src, w, h, pFD);
-	for (UINT i = 0; i < h_extend; ++i)//把所有频域数据拷贝到pTD1并应用模板
-	{
-		for (UINT j = 0; j < w_extend; ++j)
-		{
+	for (int i = 0; i < h_extend; ++i)//把所有频域数据拷贝到pTD1并应用模板
+		for (int j = 0; j < w_extend; ++j)
 			pFD[i*w_extend + j] *= pFilter[i*w_extend + j];
-		}
-	}
 
 	//逆变换
 	IFFT2(pFD, w_extend, h_extend, dst);

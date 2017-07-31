@@ -40,7 +40,6 @@ public:
 	static void GetFilter(double * pFilter, const int w_extend, const int h_extend,
 		const Filter_Type type, const int radius, const int order, const double K1 = 1.0, const double K2 = 0.5);
 
-
 	static void test(const unsigned char * src,const int w,const int h, unsigned char * dst);
 
 };
