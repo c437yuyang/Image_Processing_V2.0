@@ -50,9 +50,9 @@ void Fourier::FFT(const complex<double>* TD, complex<double>* FD, const int inde
 		FD[j] = X1[p];
 	}
 
-	delete W;
-	delete X1;
-	delete X2;
+	delete []W;
+	delete []X1;
+	delete []X2;
 
 }
 

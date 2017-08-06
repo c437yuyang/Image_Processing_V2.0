@@ -120,6 +120,9 @@
     <ClInclude Include="DlgFreqFilterSet.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Thresh.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -172,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="DlgFreqFilterSet.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Thresh.cpp">
+      <Filter>Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

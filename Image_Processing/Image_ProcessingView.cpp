@@ -371,21 +371,38 @@ void CImage_ProcessingView::OnTest()
 
 
 
+#pragma region FT测试
+	//if (m_Image.IsNull()) return;
+	//int w = m_Image.GetWidth();
+	//int h = m_Image.GetHeight();
+
+	//if (!m_Image.IsGrayed())
+	//{
+
+	//	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+	//	UpdateState(true);
+	//}
+
+	//MyImage_ FT(Fourier::calExLen(w), Fourier::calExLen(h));
+	//Fourier::test(m_Image.data(), w, h, FT.data());
+	//FT.CopyTo(m_Image);
+#pragma endregion
+
+#pragma region 阈值部分Test
 	if (m_Image.IsNull()) return;
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
 
 	if (!m_Image.IsGrayed())
 	{
-
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
-		UpdateState(true);
 	}
 
-	MyImage_ FT(Fourier::calExLen(w), Fourier::calExLen(h));
-	Fourier::test(m_Image.data(), w, h, FT.data());
-	FT.CopyTo(m_Image);
-
+	//Threshold::binThresh(m_Image.data(), w, h, m_Image.data(), 100);
+	//Threshold::globalBasic(m_Image.data(), w, h, m_Image.data());
+	//Threshold::otsu(m_Image.data(), w, h, m_Image.data());
+	Threshold::otsu(m_Image.data(), w, h, m_Image.data());
+#pragma endregion
 	UpdateState(true);
 }
 
@@ -737,14 +754,10 @@ void CImage_ProcessingView::OnFreqFilter()
 {
 	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;
-
-
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
 	int w_extend = Fourier::calExLen(w);
 	int h_extend = Fourier::calExLen(h);
-
-
 
 	DlgFreqFilterSet dlg;
 	if (dlg.DoModal() == IDCANCEL) return;
@@ -763,7 +776,7 @@ void CImage_ProcessingView::OnFreqFilter()
 	Fourier::Filter_Type type = static_cast<Fourier::Filter_Type>(dlg.m_nFilterType);
 	
 	Fourier::GetFilter(pFilter, w_extend, h_extend, type, radius, order,K1, K2);
-	MyImage_ dst(w,h);
+	MyImage_ dst(w_extend,h_extend); //一定要是extend后的
 	Fourier::Filter(m_Image.data(), w, h, pFilter, dst.data());
 	dst.CopyTo(m_Image);
 	UpdateState(true);

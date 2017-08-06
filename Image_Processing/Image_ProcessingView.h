@@ -16,6 +16,7 @@
 #include "AddNoise.h"
 #include "Fourier.h"
 #include "CvtColor.h"
+#include "Thresh.h"
 #pragma endregion
 
 #pragma region 参数设置类窗口头文件

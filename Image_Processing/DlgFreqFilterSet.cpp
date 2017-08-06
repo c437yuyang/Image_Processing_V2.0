@@ -120,3 +120,14 @@ void DlgFreqFilterSet::OnBnClickedRadioGhpf()
 	GetDlgItem(IDC_EDIT_HPF_ORIGIN_WEIGHT)->EnableWindow(TRUE);
 	GetDlgItem(IDC_EDIT_RADIUS)->EnableWindow(TRUE);
 }
+
+
+BOOL DlgFreqFilterSet::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	OnBnClickedRadioIlpf();
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}

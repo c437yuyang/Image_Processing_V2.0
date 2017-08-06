@@ -33,4 +33,5 @@ public:
 	afx_msg void OnBnClickedRadioIhpf();
 	afx_msg void OnBnClickedRadioBhpf();
 	afx_msg void OnBnClickedRadioGhpf();
+	virtual BOOL OnInitDialog();
 };
