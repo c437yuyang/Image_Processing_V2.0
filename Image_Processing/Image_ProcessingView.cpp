@@ -56,6 +56,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_FREQ_FFT, &CImage_ProcessingView::OnFreqFft)
 	ON_COMMAND(ID_CLOSE_CHILDS, &CImage_ProcessingView::OnCloseChilds)
 	ON_COMMAND(ID_FREQ_FILTER, &CImage_ProcessingView::OnFreqFilter)
+	ON_COMMAND(ID_SEGEMENT_THRESH, &CImage_ProcessingView::OnSegementThresh)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -401,7 +402,7 @@ void CImage_ProcessingView::OnTest()
 	//Threshold::binThresh(m_Image.data(), w, h, m_Image.data(), 100);
 	//Threshold::globalBasic(m_Image.data(), w, h, m_Image.data());
 	//Threshold::otsu(m_Image.data(), w, h, m_Image.data());
-	Threshold::otsu(m_Image.data(), w, h, m_Image.data());
+	Threshold::OTSU(m_Image.data(), w, h, m_Image.data());
 #pragma endregion
 	UpdateState(true);
 }
@@ -781,4 +782,20 @@ void CImage_ProcessingView::OnFreqFilter()
 	dst.CopyTo(m_Image);
 	UpdateState(true);
 	delete[] pFilter;
+}
+
+
+void CImage_ProcessingView::OnSegementThresh()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
+	//CDlgThreshParamsSet *pDlg = new CDlgThreshParamsSet;
+	//pDlg->Create(IDD_DLG_PARAM_THRESH, NULL);
+	//pDlg->ShowWindow(SW_SHOW);
+
+	//这里的updatestate由pDlg里面控制
+
 }

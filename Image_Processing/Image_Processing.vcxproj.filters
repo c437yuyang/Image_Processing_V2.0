@@ -123,6 +123,9 @@
     <ClInclude Include="Thresh.h">
       <Filter>Algorithms</Filter>
     </ClInclude>
+    <ClInclude Include="DlgThreshParamsSet.h">
+      <Filter>DlgSetParams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -178,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="Thresh.cpp">
       <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgThreshParamsSet.cpp">
+      <Filter>DlgSetParams</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

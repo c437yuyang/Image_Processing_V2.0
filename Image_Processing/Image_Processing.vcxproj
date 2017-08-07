@@ -116,6 +116,7 @@
     <ClInclude Include="DlgNosieParamsSet.h" />
     <ClInclude Include="DlgShowImg.h" />
     <ClInclude Include="DlgSLICParamsSet.h" />
+    <ClInclude Include="DlgThreshParamsSet.h" />
     <ClInclude Include="Fourier.h" />
     <ClInclude Include="ImageScaleViewer.h" />
     <ClInclude Include="ImagesStock.h" />
@@ -139,6 +140,7 @@
     <ClCompile Include="DlgNosieParamsSet.cpp" />
     <ClCompile Include="DlgShowImg.cpp" />
     <ClCompile Include="DlgSLICParamsSet.cpp" />
+    <ClCompile Include="DlgThreshParamsSet.cpp" />
     <ClCompile Include="Fourier.cpp" />
     <ClCompile Include="ImageScaleViewer.cpp" />
     <ClCompile Include="ImagesStock.cpp" />

@@ -23,18 +23,22 @@
 #include "DlgSLICParamsSet.h"
 #include "DlgNosieParamsSet.h"
 #include "DlgFreqFilterSet.h"
-
+//#include "DlgThreshParamsSet.h"
 #pragma endregion
 
 class CImage_ProcessingView : public CScrollView
 {
+	//friend class CDlgThreshParamsSet;
+
 protected: // 仅从序列化创建
 	CImage_ProcessingView();
 	DECLARE_DYNCREATE(CImage_ProcessingView)
 
 	// 特性
 public:
+	/*CImage_ProcessingDoc* GetDocument() const;*/
 	CImage_ProcessingDoc* GetDocument() const;
+
 
 	// 操作
 public:
@@ -102,6 +106,7 @@ public:
 	afx_msg void OnTest();
 	afx_msg void OnAddnoise();
 	afx_msg void OnFreqFft();
+	afx_msg void OnFreqFilter();
 #pragma endregion
 
 
@@ -117,10 +122,12 @@ private:
 	CImagesStock m_imgStock; //图像历史信息存储，用于撤销恢复  
 	ImageScaleViewer m_imgScaleViewer; //控制图像显示及缩放
 	void ShowImgInDlg(CString strWindowName, const MyImage_ &srcImg); //在一个非模态对话框显示指定图像
+	afx_msg void OnCloseChilds(); //关闭所有子窗口
 #pragma endregion
+	
+	
 public:
-	afx_msg void OnCloseChilds();
-	afx_msg void OnFreqFilter();
+	afx_msg void OnSegementThresh();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
