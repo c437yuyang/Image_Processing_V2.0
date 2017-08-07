@@ -84,10 +84,10 @@ BOOL CImage_ProcessingView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CImage_ProcessingView::OnDraw(CDC* pDC)
 {
-	CImage_ProcessingDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
+	//CImage_ProcessingDoc* pDoc = GetDocument();
+	//ASSERT_VALID(pDoc);
+	//if (!pDoc)
+	//	return;
 
 	// TODO: 在此处为本机数据添加绘制代码
 	if (!m_Image.IsNull())
@@ -169,11 +169,11 @@ void CImage_ProcessingView::Dump(CDumpContext& dc) const
 	CScrollView::Dump(dc);
 }
 
-CImage_ProcessingDoc* CImage_ProcessingView::GetDocument() const // 非调试版本是内联的
-{
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CImage_ProcessingDoc)));
-	return (CImage_ProcessingDoc*)m_pDocument;
-}
+//CImage_ProcessingDoc* CImage_ProcessingView::GetDocument() const // 非调试版本是内联的
+//{
+//	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CImage_ProcessingDoc)));
+//	return (CImage_ProcessingDoc*)m_pDocument;
+//}
 #endif //_DEBUG
 
 
@@ -791,10 +791,16 @@ void CImage_ProcessingView::OnSegementThresh()
 	if (m_Image.IsNull()) return;
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
+	if (!m_Image.IsGrayed()) 
+	{
+		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		UpdateState(TRUE);
+	}
 
-	//CDlgThreshParamsSet *pDlg = new CDlgThreshParamsSet;
-	//pDlg->Create(IDD_DLG_PARAM_THRESH, NULL);
-	//pDlg->ShowWindow(SW_SHOW);
+
+	CDlgThreshParamsSet *pDlg = new CDlgThreshParamsSet;
+	pDlg->Create(IDD_DLG_PARAM_THRESH, NULL);
+	pDlg->ShowWindow(SW_SHOW);
 
 	//这里的updatestate由pDlg里面控制
 

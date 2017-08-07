@@ -23,12 +23,12 @@
 #include "DlgSLICParamsSet.h"
 #include "DlgNosieParamsSet.h"
 #include "DlgFreqFilterSet.h"
-//#include "DlgThreshParamsSet.h"
+#include "DlgThreshParamsSet.h"
 #pragma endregion
 
 class CImage_ProcessingView : public CScrollView
 {
-	//friend class CDlgThreshParamsSet;
+	friend class CDlgThreshParamsSet;
 
 protected: // 仅从序列化创建
 	CImage_ProcessingView();
@@ -37,7 +37,7 @@ protected: // 仅从序列化创建
 	// 特性
 public:
 	/*CImage_ProcessingDoc* GetDocument() const;*/
-	CImage_ProcessingDoc* GetDocument() const;
+	//CImage_ProcessingDoc* GetDocument() const;
 
 
 	// 操作
@@ -131,9 +131,9 @@ public:
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
-inline CImage_ProcessingDoc* CImage_ProcessingView::GetDocument() const
-{
-	return reinterpret_cast<CImage_ProcessingDoc*>(m_pDocument);
-}
+//inline CImage_ProcessingDoc* CImage_ProcessingView::GetDocument() const
+//{
+//	return reinterpret_cast<CImage_ProcessingDoc*>(m_pDocument);
+//}
 #endif
 

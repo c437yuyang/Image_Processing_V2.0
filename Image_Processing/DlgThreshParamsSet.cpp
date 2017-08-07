@@ -2,12 +2,12 @@
 //
 
 #include "stdafx.h"
-#include "Image_Processing.h"
 #include "DlgThreshParamsSet.h"
 #include "afxdialogex.h"
 
 #include "Image_ProcessingView.h"
 #include "MainFrm.h"
+#include "Image_Processing.h"
 
 // CDlgThreshParamsSet ¶Ô»°¿ò
 
@@ -129,22 +129,15 @@ void CDlgThreshParamsSet::OnCbnSelchangeComboThreshmode()
 
 	CImage_ProcessingView *pView = (CImage_ProcessingView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
 	if (m_threshMode.GetCurSel() == 0)
-	{
 		m_nThresh = Threshold::getOTSUThresh(m_img.data(), m_img.GetWidth(), m_img.GetHeight());
-	}
 	else if (m_threshMode.GetCurSel() == 1)
-	{
 		m_nThresh = Threshold::getGlobalBasicThresh(m_img.data(), m_img.GetWidth(), m_img.GetHeight());
-	}
 	else
-	{
 		m_nThresh = m_SliderThresh.GetPos();
-	}
 
 	CString str;
 	str.Format(_T("ãÐÖµ:%d"), m_nThresh);
 	SetDlgItemText(IDC_STATIC_THRESHNUM, str);
-	//pView->doThreshold(pView->m_ImageThresh, pView->m_ImageAfter, m_nThresh, 0.0);
 	Threshold::binThresh(m_img.data(), m_img.GetWidth(), m_img.GetHeight(), pView->m_Image.data(), m_nThresh);
 	pView->UpdateState(false);
 	m_SliderThresh.SetPos(m_nThresh);
@@ -168,7 +161,6 @@ void CDlgThreshParamsSet::OnBnClickedOk()
 	// TODO: Add your control notification handler code here
 	GetParent()->EnableWindow(TRUE);
 	CImage_ProcessingView *pView = (CImage_ProcessingView*)((CMainFrame*)AfxGetMainWnd())->GetActiveView();
-	m_img.CopyTo(pView->m_Image);
 	pView->UpdateState(true);
 	CDialogEx::OnOK();
 }
