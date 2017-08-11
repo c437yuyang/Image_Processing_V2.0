@@ -440,5 +440,6 @@ MyImage_& MyImage_::operator=(const MyImage_ &img)
 
 bool MyImage_::operator==(const MyImage_ & rhs)
 {
-	return m_pBits == rhs.m_pBits;
+	return m_pBits == rhs.data() && m_bIsGrayed==rhs.IsGrayed() 
+			&& m_nWidth==rhs.GetWidth() && m_nHeight==rhs.GetHeight();
 }
