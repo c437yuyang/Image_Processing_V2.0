@@ -433,7 +433,7 @@ MyImage_& MyImage_::operator=(const MyImage_ &img)
 	//	}
 	//}
 
-	memcpy_s(img.m_pBits, w * h * 3, m_pBits, w * h * 3);
+	memcpy_s(m_pBits, w * h * 3, img.data(), w * h * 3);
 	delete[] pOrig;
 	return *this;
 }

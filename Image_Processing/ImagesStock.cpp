@@ -60,7 +60,7 @@ int CImagesStock::AddImageToStock(MyImage_ &img)
 		m_nIndexCur++;
 		m_imgs.push_back(img);
 	}
-	else//常规添加
+	else//常规添加(尾部)
 	{
 		if (m_nImageCount > m_nStockSize - 1) //达到了最大存储数目
 		{
