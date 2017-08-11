@@ -62,10 +62,9 @@ END_MESSAGE_MAP()
 // CImage_ProcessingView 构造/析构
 
 CImage_ProcessingView::CImage_ProcessingView()
-	: m_strFileNameSave(_T("")), m_imgScaleViewer(1.0)
+	: m_strFileNameSave(_T("")), m_imgScaleViewer(1.0),m_imgStock(10)
 {
 	// TODO: 在此处添加构造代码
-	m_strFileNameSave = "";
 }
 
 CImage_ProcessingView::~CImage_ProcessingView()
@@ -206,7 +205,7 @@ void CImage_ProcessingView::OnFileOpen()
 void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
 {
 	if (bIsStoreImage)
-		m_imgStock.AddImageToStock(m_Image);
+		m_imgStock.add(m_Image);
 	m_nWidth = m_Image.GetWidth();
 	m_nHeight = m_Image.GetHeight();
 	m_imgScaleViewer.SetNeedToUpdateScaleImage();
@@ -330,7 +329,7 @@ void CImage_ProcessingView::OnTogray()
 void CImage_ProcessingView::OnRetrieve()
 {
 	// TODO: Add your command handler code here
-	m_imgStock.getFirstImage(m_Image);
+	m_imgStock.first(m_Image);
 	UpdateState(false);
 }
 
@@ -411,7 +410,7 @@ void CImage_ProcessingView::OnTest()
 void CImage_ProcessingView::OnEditUndo()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_imgStock.getPreImage(m_Image))
+	if (m_imgStock.pre(m_Image))
 		UpdateState(false);
 }
 
@@ -419,7 +418,7 @@ void CImage_ProcessingView::OnEditUndo()
 void CImage_ProcessingView::OnEditRedo()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_imgStock.getNextImage(m_Image))
+	if (m_imgStock.next(m_Image))
 		UpdateState(false);
 }
 

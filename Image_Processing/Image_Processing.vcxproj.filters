@@ -87,9 +87,6 @@
     <ClInclude Include="SaliencyDetection.h">
       <Filter>Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="ImagesStock.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
     <ClInclude Include="DlgSLICParamsSet.h">
       <Filter>DlgSetParams</Filter>
     </ClInclude>
@@ -126,6 +123,9 @@
     <ClInclude Include="DlgThreshParamsSet.h">
       <Filter>DlgSetParams</Filter>
     </ClInclude>
+    <ClInclude Include="Stock.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -147,9 +147,6 @@
       <Filter>Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="MyImage_.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="ImagesStock.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="DlgSLICParamsSet.cpp">

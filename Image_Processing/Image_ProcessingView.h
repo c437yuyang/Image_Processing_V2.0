@@ -5,7 +5,7 @@
 #pragma once
 #pragma region 工具类头文件
 #include "MyImage_.h"
-#include "ImagesStock.h" //撤销恢复
+#include "Stock.h" //撤销恢复
 #include "ImageScaleViewer.h" //控制图像缩放以及显示图像的类  
 #include "DlgShowImg.h"
 #pragma endregion
@@ -119,7 +119,7 @@ private:
 	std::vector<CDlgShowImg *> m_dlgs;
 #pragma region 一些工具成员及函数
 	MyImage_ m_Image;
-	CImagesStock m_imgStock; //图像历史信息存储，用于撤销恢复  
+	Stock<MyImage_> m_imgStock; //图像历史信息存储，用于撤销恢复  
 	ImageScaleViewer m_imgScaleViewer; //控制图像显示及缩放
 	void ShowImgInDlg(CString strWindowName, const MyImage_ &srcImg); //在一个非模态对话框显示指定图像
 	afx_msg void OnCloseChilds(); //关闭所有子窗口
