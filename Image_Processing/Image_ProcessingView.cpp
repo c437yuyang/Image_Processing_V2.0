@@ -62,7 +62,7 @@ END_MESSAGE_MAP()
 // CImage_ProcessingView 构造/析构
 
 CImage_ProcessingView::CImage_ProcessingView()
-	: m_strFileNameSave(_T("")), m_imgScaleViewer(1.0),m_imgStock(10)
+	:m_imgScaleViewer(1.0),m_imgStock(10)
 {
 	// TODO: 在此处添加构造代码
 }
@@ -109,7 +109,7 @@ void CImage_ProcessingView::OnInitialUpdate()
 
 	CSize sizeTotal;
 	// TODO: 计算此视图的合计大小
-	sizeTotal.cx = sizeTotal.cy = 30; //起始时未打开图片的情况下 View客户区小于300x300就设置滚轮
+	sizeTotal.cx = sizeTotal.cy = 300; //起始时未打开图片的情况下 View客户区小于300x300就设置滚轮
 	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
@@ -187,8 +187,8 @@ void CImage_ProcessingView::OnFileOpen()
 	{
 		if (!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
 
-		m_strFileNameSave = dlg.GetPathName(); //pathname才是全路径
-		if (m_Image.Load(m_strFileNameSave) == MyImage_::LOAD_FAIL)
+		//pathname才是全路径
+		if (m_Image.Load(dlg.GetPathName()) == MyImage_::LOAD_FAIL)
 		{
 			AfxMessageBox(_T("打开图片出错!"));
 			return;
@@ -206,8 +206,6 @@ void CImage_ProcessingView::UpdateState(bool bIsStoreImage)
 {
 	if (bIsStoreImage)
 		m_imgStock.add(m_Image);
-	m_nWidth = m_Image.GetWidth();
-	m_nHeight = m_Image.GetHeight();
 	m_imgScaleViewer.SetNeedToUpdateScaleImage();
 	ChangeScrollSize();
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
@@ -607,8 +605,17 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CImage_ProcessingView::ChangeScrollSize()
 {
 	CSize sizeTotal;
-	sizeTotal.cx = static_cast<int>(m_nWidth*m_imgScaleViewer.GetScale()); //这里要设置为实际显示的大小才行
-	sizeTotal.cy = static_cast<int>(m_nHeight*m_imgScaleViewer.GetScale()); //起始时未打开图片的情况下 View客户区小于300x300就设置滚轮
+	if (!m_Image.IsNull())
+	{
+		sizeTotal.cx = static_cast<int>(m_Image.GetWidth()*m_imgScaleViewer.GetScale()); //这里要设置为实际显示的大小才行
+		sizeTotal.cy = static_cast<int>(m_Image.GetHeight()*m_imgScaleViewer.GetScale()); //起始时未打开图片的情况下 View客户区小于300x300就设置滚轮
+	}
+	else
+	{
+		sizeTotal.cx = 300;
+		sizeTotal.cy = 300;
+	}
+	
 	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
