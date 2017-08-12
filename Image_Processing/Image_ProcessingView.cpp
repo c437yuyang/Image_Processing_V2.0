@@ -319,7 +319,7 @@ void CImage_ProcessingView::OnTogray()
 	//}
 
 	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
-
+	m_Image.SetGrayed(true);
 	UpdateState(true);
 }
 
@@ -387,20 +387,33 @@ void CImage_ProcessingView::OnTest()
 #pragma endregion
 
 #pragma region „–÷µ≤ø∑÷Test
+	//if (m_Image.IsNull()) return;
+	//int w = m_Image.GetWidth();
+	//int h = m_Image.GetHeight();
+
+	//if (!m_Image.IsGrayed())
+	//{
+	//	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+	//	m_Image.SetGrayed(true);
+	//}
+
+	////Threshold::binThresh(m_Image.data(), w, h, m_Image.data(), 100);
+	////Threshold::globalBasic(m_Image.data(), w, h, m_Image.data());
+	////Threshold::otsu(m_Image.data(), w, h, m_Image.data());
+	//Threshold::OTSU(m_Image.data(), w, h, m_Image.data());
+#pragma endregion
+
 	if (m_Image.IsNull()) return;
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
 
-	if (!m_Image.IsGrayed())
-	{
-		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
-	}
+	//double tpl[25] = { 0.1111,0.1111 ,0.1111 ,0.1111 ,0.1111 ,0.1111 ,0.1111 ,0.1111 ,0.1111 };
 
-	//Threshold::binThresh(m_Image.data(), w, h, m_Image.data(), 100);
-	//Threshold::globalBasic(m_Image.data(), w, h, m_Image.data());
-	//Threshold::otsu(m_Image.data(), w, h, m_Image.data());
-	Threshold::OTSU(m_Image.data(), w, h, m_Image.data());
-#pragma endregion
+	vector<double> tpl(25, 1 / 25.0);
+
+	Filter::imFilter(m_Image, tpl, m_Image, MyImage_::FILL_COPY, false);
+
+
 	UpdateState(true);
 }
 
@@ -728,6 +741,7 @@ void CImage_ProcessingView::OnFreqFft()
 	{
 	
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		m_Image.SetGrayed(true);
 		UpdateState(true);
 	}
 
@@ -772,6 +786,7 @@ void CImage_ProcessingView::OnFreqFilter()
 	if (!m_Image.IsGrayed())
 	{
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		m_Image.SetGrayed(true);
 		UpdateState(true);
 	}
 
@@ -800,6 +815,7 @@ void CImage_ProcessingView::OnSegementThresh()
 	if (!m_Image.IsGrayed()) 
 	{
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
+		m_Image.SetGrayed(true);
 		UpdateState(TRUE);
 	}
 

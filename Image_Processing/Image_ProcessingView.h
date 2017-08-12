@@ -3,6 +3,13 @@
 //
 
 #pragma once
+
+#pragma region STL
+#include <vector>
+using std::vector;
+#pragma endregion
+
+
 #pragma region 工具类头文件
 #include "MyImage_.h"
 #include "Stock.h" //撤销恢复
@@ -17,6 +24,7 @@
 #include "Fourier.h"
 #include "CvtColor.h"
 #include "Thresh.h"
+#include "Filter.h"
 #pragma endregion
 
 #pragma region 参数设置类窗口头文件
@@ -107,10 +115,8 @@ public:
 	afx_msg void OnAddnoise();
 	afx_msg void OnFreqFft();
 	afx_msg void OnFreqFilter();
+	afx_msg void OnSegementThresh();
 #pragma endregion
-
-
-
 
 private:
 	
@@ -123,9 +129,6 @@ private:
 	afx_msg void OnCloseChilds(); //关闭所有子窗口
 #pragma endregion
 	
-	
-public:
-	afx_msg void OnSegementThresh();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

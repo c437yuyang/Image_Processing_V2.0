@@ -2,7 +2,7 @@
 #include "CvtColor.h"
 
 
-//支持in-place
+//支持in-place(调用函数后，需要自己手动置MyImage_类的m_bIsGrayed为true)
 void CvtColor::BGR2GRAY(const unsigned char * src, const int w, const int h, unsigned char * dst)
 {
 	for (int i = 0; i != h; ++i)

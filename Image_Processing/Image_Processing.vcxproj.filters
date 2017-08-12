@@ -126,6 +126,9 @@
     <ClInclude Include="Stock.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Filter.h">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">
@@ -167,9 +170,6 @@
     <ClCompile Include="DlgNosieParamsSet.cpp">
       <Filter>DlgSetParams</Filter>
     </ClCompile>
-    <ClCompile Include="Fourier.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="DlgShowImg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -181,6 +181,12 @@
     </ClCompile>
     <ClCompile Include="DlgThreshParamsSet.cpp">
       <Filter>DlgSetParams</Filter>
+    </ClCompile>
+    <ClCompile Include="Fourier.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>Algorithms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
