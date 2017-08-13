@@ -9,20 +9,20 @@ template<class T>
 class Stock
 {
 public:
-	Stock(int capacity):capacity(capacity) { sz = 0; curIdx = -1; }
+	Stock(int capacity):capacity(capacity) { stockSize = 0; curIdx = -1; }
 	~Stock(void) { stock.clear(); }
 	int add(T &obj);
 	int getIdx() { return curIdx; }
-	const int size() const { return sz; }
+	const int size() const { return stockSize; }
 	bool cur(T &);
 	bool pre(T &);
 	bool next(T &);
 	bool first(T &);
-	void clear() { stock.clear(); curIdx = -1; sz = 0; }
+	void clear() { stock.clear(); curIdx = -1; stockSize = 0; }
 private:
 	deque<T> stock;
 	int curIdx; //当前指针
-	int sz; //当前数量
+	int stockSize; //当前数量
 	const int capacity; //最大容量
 };
 
@@ -83,8 +83,8 @@ int Stock<T>::add(T &obj)
 	{
 		for (int i = 0; i != size() - curIdx - 1; ++i)
 			stock.pop_back();
-		sz -= (sz - curIdx - 1);
-		++sz;
+		stockSize -= (stockSize - curIdx - 1);
+		++stockSize;
 		curIdx++;
 		stock.push_back(obj);
 	}
@@ -97,7 +97,7 @@ int Stock<T>::add(T &obj)
 		}
 		else //常规添加且未达到最大数目
 		{
-			++sz;
+			++stockSize;
 			++curIdx;
 			stock.push_back(obj);
 		}
