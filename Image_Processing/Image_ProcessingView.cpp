@@ -317,6 +317,7 @@ void CImage_ProcessingView::OnTogray()
 	//		/*-------------------------Your Code Here--------------------------*/
 	//	}
 	//}
+	
 
 	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
 	m_Image.SetGrayed(true);
@@ -562,7 +563,7 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	//按住ctrl+滚轮实现缩放图像
-	if (nFlags == MK_CONTROL && zDelta < 0)
+	if (nFlags == MK_CONTROL && zDelta < 0) 
 	{
 		if (m_imgScaleViewer.GetScale() > 0.2)
 		{

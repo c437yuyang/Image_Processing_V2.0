@@ -7,7 +7,7 @@ std::default_random_engine AddNoise::e;
 
 void AddNoise::Salt(unsigned char * src, int width, int height, int nCnt)
 {
-	for (UINT i = 0; i != nCnt; i++)
+	for (int i = 0; i != nCnt; i++)
 	{
 		int m = (e() % height), n = (e() % width);
 		src[m*width * 3 + n * 3] = 255;
@@ -18,7 +18,7 @@ void AddNoise::Salt(unsigned char * src, int width, int height, int nCnt)
 
 void AddNoise::Pepper(unsigned char * src, int width, int height, int nCnt)
 {
-	for (UINT i = 0; i != nCnt; i++)
+	for (int i = 0; i != nCnt; i++)
 	{
 		int m = (e() % height), n = (e() % width);
 		src[m*width * 3 + n * 3] = 0;
