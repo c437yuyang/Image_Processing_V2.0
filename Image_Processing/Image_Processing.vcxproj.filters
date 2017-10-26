@@ -164,9 +164,6 @@
     <ClCompile Include="CvtColor.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="AddNoise.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="DlgNosieParamsSet.cpp">
       <Filter>DlgSetParams</Filter>
     </ClCompile>
@@ -186,6 +183,9 @@
       <Filter>Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="Filter.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="AddNoise.cpp">
       <Filter>Algorithms</Filter>
     </ClCompile>
   </ItemGroup>

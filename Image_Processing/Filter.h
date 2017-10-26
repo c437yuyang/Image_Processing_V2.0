@@ -13,7 +13,7 @@ public:
 	static bool imFilter(const MyImage_ &srcImg, const double *pTpl, const int nTplSize,
 		MyImage_ &dstImg, const int nFillMode, const bool bIsGrayed);
 
-	static bool imFilter(const MyImage_ &srcImg, const vector<double>& tpl,
+	static bool    imFilter(const MyImage_ &srcImg, const vector<double>& tpl,
 		MyImage_ &dstImg, const int nFillMode, const bool bIsGrayed);
 };
 

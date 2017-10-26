@@ -57,12 +57,13 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_CLOSE_CHILDS, &CImage_ProcessingView::OnCloseChilds)
 	ON_COMMAND(ID_FREQ_FILTER, &CImage_ProcessingView::OnFreqFilter)
 	ON_COMMAND(ID_SEGEMENT_THRESH, &CImage_ProcessingView::OnSegementThresh)
+	ON_COMMAND(ID_AddToRemoveNoiseDemo, &CImage_ProcessingView::OnAddtoremovenoisedemo)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
 
 CImage_ProcessingView::CImage_ProcessingView()
-	:m_imgScaleViewer(1.0),m_imgStock(10)
+	:m_imgScaleViewer(1.0), m_imgStock(10)
 {
 	// TODO: 在此处添加构造代码
 }
@@ -317,7 +318,7 @@ void CImage_ProcessingView::OnTogray()
 	//		/*-------------------------Your Code Here--------------------------*/
 	//	}
 	//}
-	
+
 
 	CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
 	m_Image.SetGrayed(true);
@@ -563,7 +564,7 @@ BOOL CImage_ProcessingView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	//按住ctrl+滚轮实现缩放图像
-	if (nFlags == MK_CONTROL && zDelta < 0) 
+	if (nFlags == MK_CONTROL && zDelta < 0)
 	{
 		if (m_imgScaleViewer.GetScale() > 0.2)
 		{
@@ -629,7 +630,7 @@ void CImage_ProcessingView::ChangeScrollSize()
 		sizeTotal.cx = 300;
 		sizeTotal.cy = 300;
 	}
-	
+
 	SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
@@ -738,18 +739,18 @@ void CImage_ProcessingView::OnFreqFft()
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
 
-	if (!m_Image.IsGrayed()) 
+	if (!m_Image.IsGrayed())
 	{
-	
+
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
 		m_Image.SetGrayed(true);
 		UpdateState(true);
 	}
 
-	MyImage_ FT(Fourier::calExLen(w),Fourier::calExLen(h));
+	MyImage_ FT(Fourier::calExLen(w), Fourier::calExLen(h));
 	Fourier::FFT2(m_Image.data(), w, h, FT.data());
 	ShowImgInDlg(_T("傅里叶频谱"), FT);
-	
+
 }
 
 void CImage_ProcessingView::ShowImgInDlg(CString strWindowName, const MyImage_ &srcImg)
@@ -797,9 +798,9 @@ void CImage_ProcessingView::OnFreqFilter()
 	double K1 = dlg.m_dOriginWeight;
 	double K2 = dlg.m_dEnforceWeight;
 	Fourier::Filter_Type type = static_cast<Fourier::Filter_Type>(dlg.m_nFilterType);
-	
-	Fourier::GetFilter(pFilter, w_extend, h_extend, type, radius, order,K1, K2);
-	MyImage_ dst(w_extend,h_extend); //一定要是extend后的
+
+	Fourier::GetFilter(pFilter, w_extend, h_extend, type, radius, order, K1, K2);
+	MyImage_ dst(w_extend, h_extend); //一定要是extend后的
 	Fourier::Filter(m_Image.data(), w, h, pFilter, dst.data());
 	dst.CopyTo(m_Image);
 	UpdateState(true);
@@ -813,7 +814,7 @@ void CImage_ProcessingView::OnSegementThresh()
 	if (m_Image.IsNull()) return;
 	int w = m_Image.GetWidth();
 	int h = m_Image.GetHeight();
-	if (!m_Image.IsGrayed()) 
+	if (!m_Image.IsGrayed())
 	{
 		CvtColor::BGR2GRAY(m_Image.data(), w, h, m_Image.data());
 		m_Image.SetGrayed(true);
@@ -826,5 +827,46 @@ void CImage_ProcessingView::OnSegementThresh()
 	pDlg->ShowWindow(SW_SHOW);
 
 	//这里的updatestate由pDlg里面控制
+
+}
+
+
+void CImage_ProcessingView::OnAddtoremovenoisedemo()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;
+	int w = m_Image.GetWidth();
+	int h = m_Image.GetHeight();
+
+	const int num = 10;
+	vector<MyImage_> imgs(num, m_Image);
+
+	for (int i = 0; i != num; ++i)
+	{
+		AddNoise::Gaussian(imgs[i].data(), w, h, 0, 20);
+		CString str;
+		str.Format(L"噪声图像:%d", i);
+		ShowImgInDlg(str, imgs[i]);
+	}
+
+	for (int i = 0; i != h; ++i)
+	{
+		for (int j = 0; j != h; ++j)
+		{
+			long long valR = 0, valG = 0, valB = 0;
+			for (int k = 0; k != num; ++k)
+			{
+				valR += imgs[k].at(i, j, 2);
+				valG += imgs[k].at(i, j, 1);
+				valB += imgs[k].at(i, j, 0);
+			}
+			m_Image.at(i, j, 0) = valB / num;
+			m_Image.at(i, j, 1) = valG / num;
+			m_Image.at(i, j, 2) = valR / num;
+
+		}
+	}
+	UpdateState(true);
+
 
 }

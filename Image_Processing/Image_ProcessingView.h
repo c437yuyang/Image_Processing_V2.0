@@ -129,6 +129,8 @@ private:
 	afx_msg void OnCloseChilds(); //关闭所有子窗口
 #pragma endregion
 	
+public:
+	afx_msg void OnAddtoremovenoisedemo();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

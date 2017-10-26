@@ -182,7 +182,6 @@ MyImage_::DrawResult  MyImage_::Draw(
 			psrc[j*nrow + k * 3 + 2] = at(j, k, 2);
 		}
 	}
-
 	//memcpy_s(psrc - w * (h - 1) * 3, w * h * 3, m_pBits, w * h * 3); 
 	//这里因为位图是从下到上的数据，所以直接用memcpy实现不了，需要逆向复制的函数才行
 
